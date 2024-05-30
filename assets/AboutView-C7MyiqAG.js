@@ -1,1 +1,0 @@
-import{f as n,g as a,X as r}from"./@vue-CdJJkxHS.js";const _=(t,e)=>{const o=t.__vccOpts||t;for(const[s,c]of e)o[s]=c;return o},i={},d={class:"about"},f=r("h1",null,"This is an about page",-1),l=[f];function u(t,e){return n(),a("div",d,l)}const p=_(i,[["render",u]]);export{p as default};
