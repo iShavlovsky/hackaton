@@ -68,6 +68,11 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     },
     Modal: {
         color: '#151518'
+    },
+    Message: {
+        color: '#151518',
+        colorInfo: '#8F75FE',
+        colorSuccess: '#4b6745'
     }
 }
 

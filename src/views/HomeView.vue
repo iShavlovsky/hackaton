@@ -14,9 +14,11 @@
                     <div class="display-flex flex-row gap-8 align-items-center op-06">
                         <p>
                             <span>RSC:</span>
-                            0х944***678м
+                            <n-ellipsis v-if="isConnected" :tooltip="true">
+                                {{ store.shortenAddress(address) }}
+                            </n-ellipsis>
                         </p>
-                        <button class="tech-btn">
+                        <button v-if="isSupported && address" class="tech-btn" @click="copyHandler(address)">
                             <span><n-icon :component="CopyOutline" :depth="1" :size="24" color="#fff" /></span>
                         </button>
                     </div>
@@ -32,7 +34,7 @@
                     size="large"
                     type="line"
                 >
-                    <n-tab-pane name="parties" tab="Parties 1">
+                    <n-tab-pane :tab="`Parties ${rows.length}`" name="parties">
                         <n-space vertical>
                             <n-table striped>
                                 <thead>
@@ -79,10 +81,16 @@
                             <span>Create party</span>
                         </button>
                     </n-tab-pane>
-                    <n-tab-pane name="quests" tab="Quests 3">
+                    <n-tab-pane :tab="`Quests ${questCards.length}`" name="quests">
                         <div class="display-flex gap-8">
-                            <QuestCard></QuestCard>
-                            <QuestCard></QuestCard>
+                            <KeepAlive>
+                                <QuestCard
+                                    v-for="card in questCards"
+                                    :key="card.id"
+                                    :card="card"
+                                    @set-event="handleSetEvent"
+                                ></QuestCard>
+                            </KeepAlive>
                         </div>
                     </n-tab-pane>
                 </n-tabs>
@@ -94,7 +102,111 @@
 import { Add, CopyOutline, SettingsSharp } from '@vicons/ionicons5'
 import PartiesTableElement from '@/components/PartiesTableElement.vue'
 import type { TableRowData } from '@/components/tableElement.typse.ts'
+import type { IEventCard, IQuestCard } from '@/types'
+import { useUserStore } from '@/stores'
+import { useAccount } from '@wagmi/vue'
+import { useClipboard } from '@vueuse/core'
+import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
+
+const store = useUserStore()
+const { isConnected, address } = useAccount()
+const message = useMessage()
+const { text, copy, copied, isSupported } = useClipboard()
+
+const copyHandler = (textCopy: string) => {
+    if (address.value) {
+        copy(textCopy).then(() => {
+            if (copied) message.success(text.value)
+        })
+    }
+}
+
+const questCards: IQuestCard[] = reactive([
+    {
+        id: 2,
+        imageSrc: '',
+        title: 'Buying Bonds on Linea with ApeBond',
+        description: "Celebrate ApeBond's recent launch on the Linea Mainnet",
+        tags: ['NFT marketplace'],
+        totalUsers: '4k',
+        reward: '15 TBA',
+        events: [
+            {
+                title: 'Intro to Ape Bond Value',
+                description:
+                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                status: false
+            },
+            {
+                title: 'Read Announcement',
+                description:
+                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                status: false
+            },
+            {
+                title: 'Join ApeBond on TG',
+                description:
+                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                status: false
+            },
+            {
+                title: 'Purchase a Bond via ApeBond',
+                description:
+                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                status: false
+            }
+        ]
+    },
+    {
+        id: 4,
+        imageSrc: '',
+        title: 'Swapping on Linea',
+        description: 'Explore the Linea ecosystem and its top DEXes.\n',
+        tags: ['DeFi'],
+        totalUsers: '4k',
+        reward: '15 TBA',
+        events: [
+            {
+                title: 'Intro to Ape Bond Value',
+                description:
+                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                status: true
+            },
+            {
+                title: 'Read Announcement',
+                description:
+                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                status: false
+            },
+            {
+                title: 'Join ApeBond on TG',
+                description:
+                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                status: false
+            },
+            {
+                title: 'Purchase a Bond via ApeBond',
+                description:
+                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                status: false
+            }
+        ]
+    }
+])
+
+const handleSetEvent = ({ cardId, eventTitle }: { cardId: IQuestCard['id']; eventTitle: IEventCard['title'] }) => {
+    const card = questCards.find(card => {
+        return card.id === cardId
+    })
+
+    if (card) {
+        const event = card.events.find(event => event.title === eventTitle)
+        if (event) {
+            event.status = true
+        }
+    }
+}
 
 const rows: TableRowData[] = [
     {
@@ -133,7 +245,6 @@ const rows: TableRowData[] = [
         totalDistributed: 15069,
         totalDistributedPercentage: 34
     }
-    // другие строки данных
 ]
 </script>
 <style lang="scss">

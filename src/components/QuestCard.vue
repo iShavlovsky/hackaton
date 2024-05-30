@@ -2,17 +2,16 @@
     <div class="quests-card pointer" @click="showModal = true">
         <n-avatar :size="300" bordered class="quests-pointer pointer" src="" />
         <n-space class="quests-card-tag-w">
-            <n-tag :bordered="false" type="info">NFT marketplace</n-tag>
+            <n-tag v-for="tag in props.card.tags" :key="tag" :bordered="false" type="info">{{ tag }}</n-tag>
         </n-space>
         <div class="quests-card__header">
             <div class="quests-card__title display-flex flex-column gap-2 quests-pointer">
-                <h2>Buying Bonds on Linea with ApeBond</h2>
+                <h2>{{ props.card.title }}</h2>
                 <p class="op-06">
-                    <n-ellipsis line-clamp="1">Celebrate ApeBond's recent launch on the Linea Mainnet</n-ellipsis>
+                    <n-ellipsis line-clamp="1">{{ props.card.description }}</n-ellipsis>
                 </p>
             </div>
         </div>
-
         <n-modal v-model:show="showModal" class="quest-custom-modal" preset="dialog" title="Dialog">
             <template #header>
                 <div></div>
@@ -21,11 +20,11 @@
                 <div class="quests-card-modal-head display-flex gap-40 align-items-center">
                     <n-avatar :size="120" bordered src="" />
                     <div class="quests-card__header display-flex flex-column gap-6">
-                        <h2>Buying Bonds on Linea with ApeBond</h2>
-                        <p class="op-06">Celebrate ApeBond's recent launch on the Linea Mainnet</p>
+                        <h2>{{ props.card.title }}</h2>
+                        <p class="op-06">{{ props.card.description }}</p>
                         <div class="display-flex gap-8">
                             <p>
-                                <span>4k</span>
+                                <span>{{ props.card.totalUsers }}</span>
                                 users
                             </p>
                             <div class="">
@@ -41,7 +40,7 @@
                         <div class="reward-count-w display-flex flex-row justify-between">
                             <div class="display-grid align-self-center">
                                 <p>Reward</p>
-                                <h2>15 TBA</h2>
+                                <h2>{{ props.card.reward }}</h2>
                             </div>
                             <n-icon :component="AmericanFootball" :size="97" class="reward-ico" color="#fff" />
                         </div>
@@ -50,81 +49,50 @@
                         </div>
                         <div class="display-grid gap-8">
                             <button
-                                class="quest-modal-step-btn display-flex flex-row align-items-center justify-between done-step"
-                            >
-                                <span class="display-flex align-items-center gap-8">
-                                    <span class="step-ico display-flex align-items-center justify-center">1</span>
-                                    <span class="step-title">Intro to Ape Bond Value</span>
-                                </span>
-                                <span class="step-lock">
-                                    <n-icon :component="LockClosed" :depth="6" :size="16" color="#fff" />
-                                </span>
-                            </button>
-
-                            <button
-                                class="quest-modal-step-btn display-flex flex-row align-items-center justify-between"
-                            >
-                                <span class="display-flex align-items-center gap-8">
-                                    <span class="step-ico display-flex align-items-center justify-center">2</span>
-                                    <span class="step-title">Read Announcement</span>
-                                </span>
-                                <span class="step-lock">
-                                    <n-icon :component="LockClosed" :depth="0.6" :size="16" color="#fff" />
-                                </span>
-                            </button>
-
-                            <button
-                                class="quest-modal-step-btn display-flex flex-row align-items-center justify-between"
-                            >
-                                <span class="display-flex align-items-center gap-8">
-                                    <span class="step-ico display-flex align-items-center justify-center">3</span>
-                                    <span class="step-title">Join ApeBond on TG</span>
-                                </span>
-                                <span class="step-lock">
-                                    <n-icon :component="LockClosed" :depth="0.6" :size="16" color="#fff" />
-                                </span>
-                            </button>
-
-                            <button
-                                class="quest-modal-step-btn display-flex flex-row align-items-center justify-between"
-                            >
-                                <span class="display-flex align-items-center gap-8">
-                                    <span class="step-ico display-flex align-items-center justify-center">4</span>
-                                    <span class="step-title">
-                                        Purchase a Bond via
-                                        <br />
-                                        ApeBond
-                                    </span>
-                                </span>
-                                <span class="step-lock">
-                                    <n-icon :component="LockClosed" :depth="0.6" :size="16" color="#fff" />
-                                </span>
-                            </button>
-
-                            <button
-                                class="quest-modal-step-btn display-flex flex-row align-items-center justify-between"
+                                v-for="(event, i) in props.card.events"
+                                :key="event.title"
+                                :class="[
+                                    'quest-modal-step-btn display-flex flex-row align-items-center justify-between',
+                                    { 'active-step': activeEventIndex === i, 'done-step': event.status }
+                                ]"
+                                :disabled="!event.status"
+                                @click="setEventDescription(event)"
                             >
                                 <span class="display-flex align-items-center gap-8">
                                     <span class="step-ico display-flex align-items-center justify-center">
-                                        <n-icon :component="Star" :depth="0.6" :size="16" color="#8F75FE" />
+                                        {{ i + 1 }}
+                                    </span>
+                                    <span class="step-title">{{ event.title }}</span>
+                                </span>
+                                <span v-if="!event.status" class="step-lock">
+                                    <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
+                                </span>
+                            </button>
+
+                            <button
+                                :class="[
+                                    'quest-modal-step-btn display-flex flex-row align-items-center justify-between',
+                                    { 'active-step': claimRewardsStep, 'done-step': claimRewardsStep }
+                                ]"
+                            >
+                                <span class="display-flex align-items-center gap-8">
+                                    <span class="step-ico display-flex align-items-center justify-center">
+                                        <n-icon :component="Star" :depth="1" :size="16" color="#8F75FE" />
                                     </span>
                                     <span class="step-title text-color-brand-aviation">Claim rewards</span>
                                 </span>
-                                <span class="step-lock">
-                                    <n-icon :component="LockClosed" :depth="0.6" :size="16" color="#fff" />
+                                <span v-if="!claimRewardsStep" class="step-lock">
+                                    <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
                                 </span>
                             </button>
                         </div>
                     </div>
                     <div class="quests-modal-step-info width-full display-flex flex-column justify-end">
-                        <h1 class="text-center mb-92">
-                            Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token
-                            purchases through Bonds
-                        </h1>
+                        <h1 class="text-center mb-92">{{ descriptionEvent }}</h1>
 
-                        <button class="main-custom-btn">
+                        <button class="main-custom-btn" @click="setEventDone">
                             <span>
-                                <n-icon :component="CheckmarkSharp" :depth="0.6" :size="16" color="currentColor" />
+                                <n-icon :component="CheckmarkSharp" :depth="1" :size="16" color="currentColor" />
                             </span>
                             <span>Done</span>
                         </button>
@@ -138,8 +106,49 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { AmericanFootball, CheckmarkSharp, LockClosed, Star } from '@vicons/ionicons5'
+import type { IEventCard, IQuestCard } from '@/types'
+
+const props = defineProps<{
+    card: IQuestCard
+}>()
+
+const emit = defineEmits<{
+    (e: 'setEvent', payload: { cardId: IQuestCard['id']; eventTitle: IEventCard['title'] }): void
+}>()
+
+const activeEventIndex = ref(0)
+const activeEvent = computed(() => props.card.events[activeEventIndex.value])
+const claimRewardsStep = ref(false)
+const descriptionEvent = ref<string>('')
+
+const setEventDescription = (event: IEventCard) => {
+    descriptionEvent.value = event.description
+}
+
+const setEventDone = () => {
+    if (activeEvent.value) {
+        emit('setEvent', { cardId: props.card.id, eventTitle: activeEvent.value.title })
+        activeEvent.value.status = true
+
+        if (activeEventIndex.value < props.card.events.length - 1) {
+            activeEventIndex.value++
+            setEventDescription(props.card.events[activeEventIndex.value])
+        } else {
+            claimRewards()
+        }
+    }
+}
+
+const claimRewards = () => {
+    claimRewardsStep.value = true
+    console.log('claimRewards', claimRewardsStep.value)
+}
 
 const showModal = ref(false)
+
+onMounted(() => {
+    setEventDescription(props.card.events[0])
+})
 </script>
 
 <style lang="scss">
@@ -228,15 +237,17 @@ const showModal = ref(false)
         border-radius: 8px;
     }
 
-    &.done-step {
+    &.active-step {
         border: 1px solid #8f75fe;
 
         .step-ico {
             background-color: #453298;
         }
-
-        .step-lock {
-            display: none;
+    }
+    &.done-step {
+        border: 1px solid #8f75fe;
+        .step-ico {
+            background-color: #453298;
         }
     }
 }

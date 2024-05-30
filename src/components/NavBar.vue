@@ -36,16 +36,11 @@
                             Connect Wallet
                         </n-button>
                     </n-dropdown>
-
                     <n-ellipsis v-if="isConnected" :tooltip="true" style="max-width: 100px; color: white">
-                        {{ address }}
+                        {{ store.shortenAddress(address) }}
                     </n-ellipsis>
                     <n-text v-if="isConnected" type="success">Chain: {{ chain?.name }}</n-text>
-                    <n-spin :show="isConnected && isBalancePending">
-                        <n-text v-if="!isBalancePending && isConnected" type="success">
-                            Balance: {{ data?.symbol }} {{ data?.value }}
-                        </n-text>
-                    </n-spin>
+                    <balance v-if="address" :address="address"></balance>
                 </n-flex>
             </div>
         </nav>
@@ -53,33 +48,36 @@
 </template>
 <script lang="ts" setup>
 import { NIcon, useMessage } from 'naive-ui'
-import { computed, h, watch } from 'vue'
-import { useAccount, useBalance, useConnect, useDisconnect } from '@wagmi/vue'
+import { computed, h } from 'vue'
+import { useConnect, useDisconnect } from '@wagmi/vue'
 import { CashOutline } from '@vicons/ionicons5'
+import Balance from '@/components/Balance.vue'
+import { useUserStore } from '@/stores'
 
+const store = useUserStore()
 const { connect, connectors, isPending: isConnectPending } = useConnect()
 const { disconnect } = useDisconnect()
-const { isConnected, address, chain } = useAccount()
+const { isConnected, address, chain } = store.getAccount()
 
-const {
-    data,
-    isPending: isBalancePending,
-    refetch
-} = useBalance({
-    address: isConnected.value ? address.value : undefined,
-    scopeKey: 'balance'
-})
 const message = useMessage()
 
 const renderIcon = (base: string | undefined) => {
-    return () => {
-        return h(NAvatar, {
-            size: 'small',
-            color: '#151518',
-            round: true,
-            style: 'margin: 4px; width: 24px; height: 24px;',
-            src: base
-        })
+    if (base) {
+        return () => {
+            return h(NAvatar, {
+                size: 'small',
+                color: '#151518',
+                round: true,
+                style: 'margin: 4px; width: 24px; height: 24px;',
+                src: base
+            })
+        }
+    } else {
+        return () => {
+            return h(NIcon, {
+                component: CashOutline
+            })
+        }
     }
 }
 
@@ -97,19 +95,9 @@ const handleSelect = (key: string) => {
     if (connector) {
         connect({ connector })
     } else {
-        message.warning('Неудачная попытка подключения!')
+        message.warning('Failed connection attempt!')
     }
 }
-
-watch(
-    isConnected,
-    (newVal, oldVal) => {
-        if (newVal && !oldVal) {
-            refetch()
-        }
-    },
-    { immediate: true }
-)
 </script>
 <style lang="scss">
 .nav-bar {
