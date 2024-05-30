@@ -2,7 +2,10 @@
     <nav-bar></nav-bar>
     <n-config-provider :theme-overrides="darkThemeOverrides">
         <n-message-provider>
-            <RouterView />
+            <NavBar />
+            <main>
+                <RouterView />
+            </main>
             <n-global-style />
         </n-message-provider>
     </n-config-provider>

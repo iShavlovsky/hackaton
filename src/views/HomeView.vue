@@ -8,39 +8,41 @@
                 Disconnect Wallet
             </n-button>
 
-            <n-dropdown
-                v-else
-                :options="options"
-                :show-arrow="true"
-                size="large"
-                trigger="click"
-                @select="handleSelect"
-            >
-                <n-button :loading="isPending" round>
-                    <template #icon>
-                        <n-icon :component="CashOutline" :depth="1" color="#92FE75" />
-                    </template>
-                    Connect Wallet
-                </n-button>
-            </n-dropdown>
+        <n-dropdown v-else :options="options" :show-arrow="true" size="large" trigger="click" @select="handleSelect">
+            <n-button :loading="isConnectPending" round>
+                <template #icon>
+                    <n-icon :component="CashOutline" :depth="1" color="#92FE75" />
+                </template>
+                Connect Wallet
+            </n-button>
+        </n-dropdown>
 
-            <n-ellipsis v-if="isConnected" :tooltip="true" style="max-width: 100px; color: white">
-                {{ address }}
-            </n-ellipsis>
-            <n-text v-if="isConnected" type="success">Chain: {{ chain?.name }}</n-text>
-        </section>
-    </main>
+        <n-ellipsis v-if="isConnected" :tooltip="true" style="max-width: 100px; color: white">
+            {{ address }}
+        </n-ellipsis>
+        <n-text v-if="isConnected" type="success">Chain: {{ chain?.name }}</n-text>
+        <n-divider></n-divider>
+        <n-flex>
+            <n-spin :show="isConnected && isBalancePending">
+                <n-text v-if="!isBalancePending" type="success">Balance: {{ data?.symbol }} {{ data?.value }}</n-text>
+            </n-spin>
+        </n-flex>
+    </section>
 </template>
 <script lang="ts" setup>
 import { computed, h } from 'vue'
 import { NIcon, useMessage } from 'naive-ui'
 import { CashOutline } from '@vicons/ionicons5'
-import { useAccount, useConnect, useDisconnect } from '@wagmi/vue'
+import { useAccount, useBalance, useConnect, useDisconnect } from '@wagmi/vue'
 
-const { connect, connectors, isPending } = useConnect()
+const { connect, connectors, isPending: isConnectPending } = useConnect()
 const { disconnect } = useDisconnect()
 
 const { isConnected, address, chain } = useAccount()
+
+const { data, isPending: isBalancePending } = useBalance({
+    address: address.value
+})
 const message = useMessage()
 
 const renderIcon = (base: string | undefined) => {
