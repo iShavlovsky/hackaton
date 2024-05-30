@@ -10,17 +10,7 @@
             </svg>
         </n-icon>
         <section>
-            <n-icon :component="CashOutline" :depth="1" size="40" />
-            <n-icon :component="CashOutline" :depth="2" size="40" />
-            <n-icon :component="CashOutline" :depth="3" size="40" />
-            <n-icon :component="CashOutline" :depth="4" size="40" />
-            <n-icon :component="CashOutline" :depth="5" size="40" />
-            <n-icon :component="GameController" color="#0e7a0d" size="40" />
-            <n-icon :component="LockClosed" :depth="1" size="40" />
-            <n-icon :depth="1" size="40">
-                <LockClosed />
-            </n-icon>
-            <n-button v-if="isConnected" :loading="isPending" @click="disconnect">
+            <n-button v-if="isConnected" :loading="isPending" @click="disconnect()">
                 <template #icon>
                     <n-icon :component="CashOutline" :depth="1" />
                 </template>
@@ -53,7 +43,7 @@
 <script lang="ts" setup>
 import { computed, h } from 'vue'
 import { NIcon, useMessage } from 'naive-ui'
-import { CashOutline, GameController, LockClosed } from '@vicons/ionicons5'
+import { CashOutline } from '@vicons/ionicons5'
 import { useAccount, useConnect, useDisconnect } from '@wagmi/vue'
 
 const { connect, connectors, isPending } = useConnect()

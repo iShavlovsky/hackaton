@@ -27,6 +27,7 @@ export default defineConfig(({ mode }) => {
                 }
             }
         },
+        base: process.env.NODE_ENV === 'production' ? '/hackaton/' : '/',
         plugins: [
             tsconfigPaths(),
             vue({
