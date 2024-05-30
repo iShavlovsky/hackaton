@@ -1,23 +1,38 @@
 <template>
-    <n-config-provider :theme-overrides="themeOverrides">
+    <n-config-provider :theme-overrides="darkThemeOverrides">
         <n-message-provider>
             <RouterView />
+            <n-global-style />
         </n-message-provider>
     </n-config-provider>
 </template>
 <script lang="ts" setup>
 import { type GlobalThemeOverrides, NConfigProvider } from 'naive-ui'
+import { useTitle } from '@vueuse/core'
 
-const themeOverrides: GlobalThemeOverrides = {
+useTitle('Rev Share Party')
+const darkThemeOverrides: GlobalThemeOverrides = {
     common: {
-        primaryColor: '#FF0000'
+        baseColor: '#000000',
+        primaryColor: '#92FE75',
+        bodyColor: '#000000',
+        borderColor: '#92FE75'
     },
     Button: {
-        textColor: '#FF0000'
+        color: '#151518',
+        textColor: '#92FE75',
+        borderHover: '#8F75FE',
+        borderFocus: '#8F75FE'
     },
     Dropdown: {
-        color: '#FF0000'
+        color: '#151518',
+        optionTextColor: '#FFF',
+        optionColorHover: '#92FE75'
     }
 }
+
+const lightThemeOverrides: GlobalThemeOverrides = {
+    common: {}
+}
 </script>
-<style scoped></style>
+<style lang="scss" scoped></style>
