@@ -31,12 +31,28 @@
                 <span>{{ totalDistributedPercentage }}%</span>
             </div>
         </td>
+        <td style="vertical-align: middle">
+            <div class="display-flex gap-8">
+                <button class="main-custom-btn small-btn">
+                    <span>
+                        <n-icon :component="ShareSocialSharp" :size="16" color="currentColor" />
+                    </span>
+                    <span>Invite</span>
+                </button>
+                <button class="main-custom-btn gray-btn">
+                    <span>
+                        <n-icon :component="ChevronForward" :size="16" color="currentColor" />
+                    </span>
+                </button>
+            </div>
+        </td>
     </tr>
 </template>
 
 <script lang="ts" setup>
 import { defineProps } from 'vue'
 import { TableRowData } from './tableElement.typse.ts'
+import { ChevronForward, ShareSocialSharp } from '@vicons/ionicons5'
 
 const props = defineProps<TableRowData>()
 </script>
