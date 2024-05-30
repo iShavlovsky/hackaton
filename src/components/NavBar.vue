@@ -46,8 +46,6 @@
             </n-ellipsis>
             <n-text v-if="isConnected" type="success">Chain: {{ chain?.name }}</n-text>
             <balance v-if="address" :address="address"></balance>
-
-            <n-button v-if="isConnected" @click="deployContract">Deploy Contract</n-button>
         </n-flex>
     </header>
 </template>
@@ -55,7 +53,7 @@
 import { RouterLink } from 'vue-router'
 import { NIcon, useMessage } from 'naive-ui'
 import { computed, h } from 'vue'
-import { useAccount, useBlockNumber, useClient, useConfig, useConnect, useDisconnect } from '@wagmi/vue'
+import { useAccount, useConnect, useDisconnect } from '@wagmi/vue'
 import { CashOutline } from '@vicons/ionicons5'
 import Balance from '@/components/Balance.vue'
 // import { createWalletClient, custom } from 'viem'
@@ -103,29 +101,6 @@ const handleSelect = (key: string) => {
         connect({ connector })
     } else {
         message.warning('Неудачная попытка подключения!')
-    }
-}
-const config = useConfig()
-const { data: blockNumber } = useBlockNumber({
-    chainId: chain.value?.id
-})
-const client = useClient({
-    chainId: chain.value?.id
-})
-
-const deployContract = async () => {
-    try {
-        // const factory = new ethers.ContractFactory(SimpleStorage.abi, SimpleStorage.bytecode, signer)
-        // const contract = await factory.deploy()
-        //
-        // await contract.deployTransaction.wait()
-        // contractAddress.value = contract.address
-        console.log(chain.value?.id)
-        console.log(client.value)
-        console.log(config)
-        console.log(blockNumber.value)
-    } catch (error) {
-        console.error('Error deploying contract:', error)
     }
 }
 </script>

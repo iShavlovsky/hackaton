@@ -13,6 +13,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@moralisweb3/common-evm-utils": "^2.26.2",
     "@tanstack/vue-query": "^5.40.0",
     "@vueuse/core": "^10.10.0",
     "@wagmi/vue": "^0.0.10",

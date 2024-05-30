@@ -3,6 +3,7 @@
         <n-config-provider :theme-overrides="darkThemeOverrides">
             <n-message-provider>
                 <NavBar />
+                <button @click="deployContract()">ff</button>
                 <main>
                     <RouterView />
                 </main>
@@ -15,10 +16,38 @@
 import { type GlobalThemeOverrides, NThemeEditor } from 'naive-ui'
 import { useTitle } from '@vueuse/core'
 import NavBar from '@/components/NavBar.vue'
+import { useAccount, useChainId, useChains, useClient } from '@wagmi/vue'
+import 'viem/window'
+import { createWalletClient, custom, type DeployContractParameters } from 'viem'
+import { wagmiContract } from '@/contracts/contract.ts'
 
-// const serverUrl = import.meta.env.VITE_MORALIS_NODES_TESTNET_LINEA_SITE_1
-// const appId = import.meta.env.VITE_MORALIS_TESTNET_NODE_API_KEY
-// const provider = new ethers.JsonRpcProvider(`${serverUrl}${appId}`)
+const accountCheck = useAccount()
+const chains = useChains()
+const chainId = useChainId()
+const client = useClient({
+    chainId
+})
+
+async function deployContract() {
+    const walletClient = createWalletClient({
+        account: accountCheck.address.value,
+        chain: accountCheck.chain.value,
+        transport: custom(window.ethereum!)
+    })
+    const [account] = await walletClient.getAddresses()
+    if (!account) return
+    const parameters: DeployContractParameters = {
+        ...wagmiContract,
+        account
+    }
+    try {
+        const hash = await walletClient.deployContract(parameters)
+        console.log('Account:', account)
+        console.log('Transaction Hash:', hash)
+    } catch (error) {
+        console.error('Error deploying contract:', error)
+    }
+}
 
 useTitle('Rev Share Party')
 const darkThemeOverrides: GlobalThemeOverrides = {
@@ -44,34 +73,5 @@ const darkThemeOverrides: GlobalThemeOverrides = {
 const lightThemeOverrides: GlobalThemeOverrides = {
     common: {}
 }
-
-// const user = ref<Moralis.User<Moralis.Attributes> | void | null>(null)
-// const isAuthenticated = computed<boolean>(() => user.value !== null)
-
-onMounted(() => {
-    // console.log(provider)
-    // if (!isAuthenticated.value) {
-    //     user.value = Moralis.User.current()
-    // }
-})
-
-// const logIn = async () => {
-//     if (!isAuthenticated.value) {
-//         user.value = await Moralis.authenticate({
-//             signingMessage: 'Log in using Moralis'
-//         })
-//             .then(user => user)
-//             .catch(error => {
-//                 console.error(error)
-//             })
-//     }
-//     console.log('logged in user:', user.value)
-// }
-//
-// const logOut = async () => {
-//     await Moralis.User.logOut()
-//     user.value = null
-//     console.log('logged out')
-// }
 </script>
 <style lang="scss" scoped></style>
