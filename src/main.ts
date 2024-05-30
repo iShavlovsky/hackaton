@@ -4,7 +4,7 @@ import { WagmiPlugin } from '@wagmi/vue'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-import {config} from "@/configWagmi";
+import { config } from '@/configWagmi'
 
 import App from './App.vue'
 import router from './router'
