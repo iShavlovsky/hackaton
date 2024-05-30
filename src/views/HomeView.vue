@@ -74,7 +74,7 @@
 
                         <button class="main-custom-btn width-full">
                             <span>
-                                <n-icon :component="Add" :depth="0.6" :size="16" color="currentColor" />
+                                <n-icon :component="Add" :depth="5" :size="16" color="currentColor" />
                             </span>
                             <span>Create party</span>
                         </button>
@@ -93,7 +93,7 @@
 <script lang="ts" setup>
 import { Add, CopyOutline, SettingsSharp } from '@vicons/ionicons5'
 import PartiesTableElement from '@/components/PartiesTableElement.vue'
-import { TableRowData } from '@/components/tableElement.typse.ts'
+import type { TableRowData } from '@/components/tableElement.typse.ts'
 import QuestCard from '@/components/QuestCard.vue'
 
 const rows: TableRowData[] = [

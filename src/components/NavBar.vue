@@ -13,37 +13,36 @@
                 </span>
             </RouterLink>
             <div>
-                <n-button v-if="isConnected" :loading="isConnectPending" @click="disconnect()">
-                    <template #icon>
-                        <n-icon :component="CashOutline" :depth="1" color="#92FE75" />
-                    </template>
-                    Disconnect Wallet
-                </n-button>
-
-                <n-dropdown
-                    v-else
-                    :options="options"
-                    :show-arrow="true"
-                    size="large"
-                    trigger="click"
-                    @select="handleSelect"
-                >
-                    <n-button :loading="isConnectPending" round>
+                <n-flex>
+                    <n-button v-if="isConnected" :loading="isConnectPending" @click="disconnect()">
                         <template #icon>
                             <n-icon :component="CashOutline" :depth="1" color="#92FE75" />
                         </template>
-                        Connect Wallet
+                        Disconnect Wallet
                     </n-button>
-                </n-dropdown>
 
-                <n-ellipsis v-if="isConnected" :tooltip="true" style="max-width: 100px; color: white">
-                    {{ address }}
-                </n-ellipsis>
-                <n-text v-if="isConnected" type="success">Chain: {{ chain?.name }}</n-text>
+                    <n-dropdown
+                        v-else
+                        :options="options"
+                        :show-arrow="true"
+                        size="large"
+                        trigger="click"
+                        @select="handleSelect"
+                    >
+                        <n-button :loading="isConnectPending" round>
+                            <template #icon>
+                                <n-icon :component="CashOutline" :depth="1" color="#92FE75" />
+                            </template>
+                            Connect Wallet
+                        </n-button>
+                    </n-dropdown>
 
-                <n-flex>
+                    <n-ellipsis v-if="isConnected" :tooltip="true" style="max-width: 100px; color: white">
+                        {{ address }}
+                    </n-ellipsis>
+                    <n-text v-if="isConnected" type="success">Chain: {{ chain?.name }}</n-text>
                     <n-spin :show="isConnected && isBalancePending">
-                        <n-text v-if="!isBalancePending" type="success">
+                        <n-text v-if="!isBalancePending && isConnected" type="success">
                             Balance: {{ data?.symbol }} {{ data?.value }}
                         </n-text>
                     </n-spin>
@@ -60,7 +59,6 @@ import { CashOutline } from '@vicons/ionicons5'
 
 const { connect, connectors, isPending: isConnectPending } = useConnect()
 const { disconnect } = useDisconnect()
-
 const { isConnected, address, chain } = useAccount()
 
 const {
