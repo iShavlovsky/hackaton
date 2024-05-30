@@ -1,4 +1,5 @@
 <template>
+    <nav-bar></nav-bar>
     <n-config-provider :theme-overrides="darkThemeOverrides">
         <n-message-provider>
             <RouterView />
@@ -9,6 +10,7 @@
 <script lang="ts" setup>
 import { type GlobalThemeOverrides, NConfigProvider } from 'naive-ui'
 import { useTitle } from '@vueuse/core'
+import NavBar from '@/components/NavBar.vue'
 
 useTitle('Rev Share Party')
 const darkThemeOverrides: GlobalThemeOverrides = {
