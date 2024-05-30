@@ -1,8 +1,3 @@
-<script lang="ts" setup>
-import { RouterLink } from 'vue-router'
-import { NIcon } from 'naive-ui'
-</script>
-
 <template>
     <header>
         <n-flex>
@@ -22,8 +17,104 @@ import { NIcon } from 'naive-ui'
                     <RouterLink to="/about">About</RouterLink>
                 </nav>
             </n-space>
+            <n-button v-if="isConnected" :loading="isConnectPending" @click="disconnect()">
+                <template #icon>
+                    <n-icon :component="CashOutline" :depth="1" color="#92FE75" />
+                </template>
+                Disconnect Wallet
+            </n-button>
+
+            <n-dropdown
+                v-else
+                :options="options"
+                :show-arrow="true"
+                size="large"
+                trigger="click"
+                @select="handleSelect"
+            >
+                <n-button :loading="isConnectPending" round>
+                    <template #icon>
+                        <n-icon :component="CashOutline" :depth="1" color="#92FE75" />
+                    </template>
+                    Connect Wallet
+                </n-button>
+            </n-dropdown>
+
+            <n-ellipsis v-if="isConnected" :tooltip="true" style="max-width: 100px; color: white">
+                {{ address }}
+            </n-ellipsis>
+            <n-text v-if="isConnected" type="success">Chain: {{ chain?.name }}</n-text>
+            <n-divider></n-divider>
+            <n-flex>
+                <n-spin :show="isConnected && isBalancePending">
+                    <n-text v-if="!isBalancePending" type="success">
+                        Balance: {{ data?.symbol }} {{ data?.value }}
+                    </n-text>
+                </n-spin>
+            </n-flex>
         </n-flex>
     </header>
 </template>
+<script lang="ts" setup>
+import { RouterLink } from 'vue-router'
+import { NIcon, useMessage } from 'naive-ui'
+import { computed, h, watch } from 'vue'
+import { useAccount, useBalance, useConnect, useDisconnect } from '@wagmi/vue'
+import { CashOutline } from '@vicons/ionicons5'
 
+const { connect, connectors, isPending: isConnectPending } = useConnect()
+const { disconnect } = useDisconnect()
+
+const { isConnected, address, chain } = useAccount()
+
+const {
+    data,
+    isPending: isBalancePending,
+    refetch
+} = useBalance({
+    address: isConnected.value ? address.value : undefined,
+    scopeKey: 'balance'
+})
+const message = useMessage()
+
+const renderIcon = (base: string | undefined) => {
+    return () => {
+        return h(NAvatar, {
+            size: 'small',
+            color: '#151518',
+            round: true,
+            style: 'margin: 4px; width: 24px; height: 24px;',
+            src: base
+        })
+    }
+}
+
+const options = computed(() => {
+    return connectors.map(item => ({
+        label: item.name,
+        key: item.name,
+        icon: renderIcon(item.icon)
+    }))
+})
+
+const handleSelect = (key: string) => {
+    const connector = connectors.find(el => el.name === key)
+
+    if (connector) {
+        connect({ connector })
+    } else {
+        message.warning('Неудачная попытка подключения!')
+    }
+}
+
+watch(
+    isConnected,
+    (newVal, oldVal) => {
+        if (newVal && !oldVal) {
+            refetch()
+        }
+    },
+    { immediate: true }
+)
+</script>
 <style scoped></style>
