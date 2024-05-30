@@ -1,5 +1,6 @@
 <template>
     <header>
+        <p>adsada</p>
         <n-flex>
             <n-icon :depth="1" size="91">
                 <svg fill="none" height="44" width="91" xmlns="http://www.w3.org/2000/svg">
@@ -44,48 +45,46 @@
                 {{ address }}
             </n-ellipsis>
             <n-text v-if="isConnected" type="success">Chain: {{ chain?.name }}</n-text>
-            <n-divider></n-divider>
-            <n-flex>
-                <n-spin :show="isConnected && isBalancePending">
-                    <n-text v-if="!isBalancePending" type="success">
-                        Balance: {{ data?.symbol }} {{ data?.value }}
-                    </n-text>
-                </n-spin>
-            </n-flex>
+            <balance v-if="address" :address="address"></balance>
+
+            <n-button v-if="isConnected" @click="deployContract">Deploy Contract</n-button>
         </n-flex>
     </header>
 </template>
 <script lang="ts" setup>
 import { RouterLink } from 'vue-router'
 import { NIcon, useMessage } from 'naive-ui'
-import { computed, h, watch } from 'vue'
-import { useAccount, useBalance, useConnect, useDisconnect } from '@wagmi/vue'
+import { computed, h } from 'vue'
+import { useAccount, useBlockNumber, useClient, useConfig, useConnect, useDisconnect } from '@wagmi/vue'
 import { CashOutline } from '@vicons/ionicons5'
+import Balance from '@/components/Balance.vue'
+// import { createWalletClient, custom } from 'viem'
+// import { mainnet } from 'viem/chains'
 
 const { connect, connectors, isPending: isConnectPending } = useConnect()
 const { disconnect } = useDisconnect()
 
 const { isConnected, address, chain } = useAccount()
 
-const {
-    data,
-    isPending: isBalancePending,
-    refetch
-} = useBalance({
-    address: isConnected.value ? address.value : undefined,
-    scopeKey: 'balance'
-})
 const message = useMessage()
 
 const renderIcon = (base: string | undefined) => {
-    return () => {
-        return h(NAvatar, {
-            size: 'small',
-            color: '#151518',
-            round: true,
-            style: 'margin: 4px; width: 24px; height: 24px;',
-            src: base
-        })
+    if (base) {
+        return () => {
+            return h(NAvatar, {
+                size: 'small',
+                color: '#151518',
+                round: true,
+                style: 'margin: 4px; width: 24px; height: 24px;',
+                src: base
+            })
+        }
+    } else {
+        return () => {
+            return h(NIcon, {
+                component: CashOutline
+            })
+        }
     }
 }
 
@@ -106,15 +105,28 @@ const handleSelect = (key: string) => {
         message.warning('Неудачная попытка подключения!')
     }
 }
+const config = useConfig()
+const { data: blockNumber } = useBlockNumber({
+    chainId: chain.value?.id
+})
+const client = useClient({
+    chainId: chain.value?.id
+})
 
-watch(
-    isConnected,
-    (newVal, oldVal) => {
-        if (newVal && !oldVal) {
-            refetch()
-        }
-    },
-    { immediate: true }
-)
+const deployContract = async () => {
+    try {
+        // const factory = new ethers.ContractFactory(SimpleStorage.abi, SimpleStorage.bytecode, signer)
+        // const contract = await factory.deploy()
+        //
+        // await contract.deployTransaction.wait()
+        // contractAddress.value = contract.address
+        console.log(chain.value?.id)
+        console.log(client.value)
+        console.log(config)
+        console.log(blockNumber.value)
+    } catch (error) {
+        console.error('Error deploying contract:', error)
+    }
+}
 </script>
 <style scoped></style>

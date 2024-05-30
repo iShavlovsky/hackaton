@@ -3,6 +3,7 @@ import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import { WagmiPlugin } from '@wagmi/vue'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import naive from 'naive-ui'
 
 import { config } from '@/configWagmi'
 
@@ -16,5 +17,5 @@ app.use(WagmiPlugin, { config })
 app.use(VueQueryPlugin, { queryClient })
 app.use(createPinia())
 app.use(router)
-
+app.use(naive)
 app.mount('#app')
