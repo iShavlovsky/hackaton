@@ -101,7 +101,7 @@
 <script lang="ts" setup>
 import { Add, CopyOutline, SettingsSharp } from '@vicons/ionicons5'
 import PartiesTableElement from '@/components/PartiesTableElement.vue'
-import type { TableRowData } from '@/components/tableElement.typse.ts'
+import type { TableRowData } from '@/components/tableElement.type.ts'
 import type { IEventCard, IQuestCard } from '@/types'
 import { useUserStore } from '@/stores'
 import { useAccount } from '@wagmi/vue'

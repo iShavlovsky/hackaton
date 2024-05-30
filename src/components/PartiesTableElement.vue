@@ -51,7 +51,7 @@
 
 <script lang="ts" setup>
 import { defineProps } from 'vue'
-import { TableRowData } from './tableElement.typse.ts'
+import type { TableRowData } from './tableElement.type.ts'
 import { ChevronForward, ShareSocialSharp } from '@vicons/ionicons5'
 
 const props = defineProps<TableRowData>()
