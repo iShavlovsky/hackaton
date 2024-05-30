@@ -20,7 +20,7 @@
             <n-icon :depth="1" size="40">
                 <LockClosed />
             </n-icon>
-            <n-button v-if="isConnected" :loading="isPending" @click="disconnect">
+            <n-button v-if="isConnected" :loading="isPending" @click="disconnect()">
                 <template #icon>
                     <n-icon :component="CashOutline" :depth="1" />
                 </template>
