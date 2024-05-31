@@ -55,5 +55,5 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
-    return { addressUser, chainUser, getAccount, shortenAddress }
+    return { addressUser, chainUser, getAccount, shortenAddress, deployContract }
 })
