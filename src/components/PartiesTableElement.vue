@@ -40,7 +40,7 @@
                     <span>Invite</span>
                 </button>
                 <RouterLink class="main-custom-btn gray-btn" to="/party-page">
-                    <span>
+                    <span class="display-flex">
                         <n-icon :component="ChevronForward" :size="16" color="currentColor" />
                     </span>
                 </RouterLink>
