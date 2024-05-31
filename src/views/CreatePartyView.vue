@@ -17,13 +17,7 @@
                 <div class="party-form-w display-grid gap-32">
                     <h2 class="text-accent-900 text-center">Party details</h2>
                     <div class="display-grid gap-8">
-                        <n-input
-                            v-model:value="partydetailsname"
-                            path="user.name"
-                            placeholder="Name"
-                            size="large"
-                            type="text"
-                        />
+                        <n-input v-model:value="partydetailsname" placeholder="Name" size="large" type="text" />
                         <n-input v-model:value="partydetailsdes" placeholder="Description" size="large" type="text" />
                     </div>
                 </div>
@@ -71,13 +65,13 @@
                             class="add-member text-left display-flex justify-between align-items-center"
                             @click="showModal = true"
                         >
-                            <div class="display-flex gap-16 align-items-center">
-                                <div class="member-revenue-w add-member-ico">
+                            <span class="display-flex gap-16 align-items-center">
+                                <span class="member-revenue-w add-member-ico">
                                     <span><n-icon :component="Add" :depth="1" :size="24" color="#fff" /></span>
-                                </div>
+                                </span>
 
-                                <p>Add type of members</p>
-                            </div>
+                                <span>Add type of members</span>
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -114,8 +108,8 @@
                         </div>
                     </div>
                     <div class="mt-80 width-full">
-                        <button class="main-custom-btn width-full">
-                            <p>Create party</p>
+                        <button class="main-custom-btn width-full" type="button">
+                            <span>Create party</span>
                         </button>
                     </div>
                 </div>
@@ -132,8 +126,8 @@
                     <n-input v-model:value="addtypename" placeholder="Name" size="large" type="text" />
                     <n-input v-model:value="addtypedes" placeholder="Description" size="large" type="text" />
                     <n-input v-model:value="addtyperev" placeholder="Revenue share %" size="large" type="text" />
-                    <button class="main-custom-btn width-full">
-                        <p>Add</p>
+                    <button class="main-custom-btn width-full" type="button">
+                        <span>Add</span>
                     </button>
                 </div>
             </div>
