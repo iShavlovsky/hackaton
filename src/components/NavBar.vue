@@ -13,10 +13,10 @@
                 </span>
             </RouterLink>
             <div>
-                <n-flex>
+                <div class="display-flex flex-row align-items-center gap-16">
                     <n-button v-if="isConnected" :loading="isConnectPending" @click="disconnect()">
                         <template #icon>
-                            <n-icon :component="CashOutline" :depth="1" color="#92FE75" />
+                            <n-icon :component="Unlink" :depth="1" color="#92FE75" />
                         </template>
                         Disconnect Wallet
                     </n-button>
@@ -31,17 +31,24 @@
                     >
                         <n-button :loading="isConnectPending" round>
                             <template #icon>
-                                <n-icon :component="CashOutline" :depth="1" color="#92FE75" />
+                                <n-icon :component="WalletOutline" :depth="1" color="#92FE75" />
                             </template>
                             Connect Wallet
                         </n-button>
                     </n-dropdown>
-                    <n-ellipsis v-if="isConnected" :tooltip="true" style="max-width: 100px; color: white">
-                        {{ store.shortenAddress(address) }}
-                    </n-ellipsis>
-                    <n-text v-if="isConnected" type="success">Chain: {{ chain?.name }}</n-text>
-                    <balance v-if="address" :address="address"></balance>
-                </n-flex>
+                    <div class="display-flex flex-column">
+                        <n-text v-if="isConnected" style="color: #92fe75" type="success">
+                            Chain: {{ chain?.name }}
+                        </n-text>
+                        <div class="display-flex gap-8">
+                            <n-ellipsis v-if="isConnected" :tooltip="true" style="max-width: 100px; color: white">
+                                {{ store.shortenAddress(address) }}
+                            </n-ellipsis>
+
+                            <balance v-if="address" :address="address"></balance>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
@@ -50,7 +57,7 @@
 import { NIcon, useMessage } from 'naive-ui'
 import { computed, h } from 'vue'
 import { useConnect, useDisconnect } from '@wagmi/vue'
-import { CashOutline } from '@vicons/ionicons5'
+import { Unlink, WalletOutline } from '@vicons/ionicons5'
 import Balance from '@/components/Balance.vue'
 import { useMainStore } from '@/stores'
 
@@ -75,7 +82,7 @@ const renderIcon = (base: string | undefined) => {
     } else {
         return () => {
             return h(NIcon, {
-                component: CashOutline
+                component: WalletOutline
             })
         }
     }
@@ -103,5 +110,11 @@ const handleSelect = (key: string) => {
 .nav-bar {
     padding: 25px 0;
     background-color: #151518;
+}
+
+.n-spin-content {
+    span {
+        color: #92fe75 !important;
+    }
 }
 </style>
