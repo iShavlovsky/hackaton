@@ -52,9 +52,9 @@ import { computed, h } from 'vue'
 import { useConnect, useDisconnect } from '@wagmi/vue'
 import { CashOutline } from '@vicons/ionicons5'
 import Balance from '@/components/Balance.vue'
-import { useUserStore } from '@/stores'
+import { useMainStore } from '@/stores'
 
-const store = useUserStore()
+const store = useMainStore()
 const { connect, connectors, isPending: isConnectPending } = useConnect()
 const { disconnect } = useDisconnect()
 const { isConnected, address, chain } = store.getAccount()

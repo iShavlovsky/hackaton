@@ -103,14 +103,14 @@ import { Add, CopyOutline, SettingsSharp } from '@vicons/ionicons5'
 import PartiesTableElement from '@/components/PartiesTableElement.vue'
 import type { TableRowData } from '@/components/tableElement.type.ts'
 import type { IEventCard, IQuestCard } from '@/types'
-import { useUserStore } from '@/stores'
+import { useMainStore } from '@/stores'
 import { useAccount } from '@wagmi/vue'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
 import { RouterLink } from 'vue-router'
 
-const store = useUserStore()
+const store = useMainStore()
 const { isConnected, address } = useAccount()
 const message = useMessage()
 const { text, copy, copied, isSupported } = useClipboard()

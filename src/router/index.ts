@@ -13,6 +13,11 @@ const router = createRouter({
             path: '/create-party',
             name: 'CreateParty',
             component: () => import('../views/CreatePartyView.vue')
+        },
+        {
+            path: '/party-page',
+            name: 'PartyPage',
+            component: () => import('../views/PartyPageView.vue')
         }
     ]
 })

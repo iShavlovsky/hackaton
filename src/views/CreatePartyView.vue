@@ -17,22 +17,52 @@
                 <div class="party-form-w display-grid gap-32">
                     <h2 class="text-accent-900 text-center">Party details</h2>
                     <div class="display-grid gap-8">
-                        <n-input v-model:value="partydetailsname" placeholder="Name" size="large" type="text" />
-                        <n-input v-model:value="partydetailsdes" placeholder="Description" size="large" type="text" />
+                        <n-input
+                            v-model:value.trim="createPartyForm.name"
+                            path="user.name"
+                            placeholder="Name"
+                            size="large"
+                            type="text"
+                        />
+                        <n-input
+                            v-model:value.trim="createPartyForm.description"
+                            placeholder="Description"
+                            size="large"
+                            type="text"
+                        />
                     </div>
                 </div>
 
                 <div class="party-form-w display-grid gap-32">
                     <h2 class="text-accent-900 text-center">Your share</h2>
                     <div class="display-grid grid-cols-2 gap-32">
-                        <n-input v-model:value="sharevalue" placeholder="80%" size="large" type="text" />
+                        <n-input-number
+                            v-model:value.trim="createPartyForm.share"
+                            :default-value="null"
+                            :max="100"
+                            :min="1"
+                            :placeholder="`${totalShare}%`"
+                            :show-button="false"
+                            :step="1"
+                            size="large"
+                        />
                         <div class="display-flex gap-12 align-items-center">
                             <div class="ico-w">
                                 <n-icon :component="Wallet" :depth="1" :size="16" color="#fff" />
                             </div>
                             <div class="display-grid gap-2">
-                                <p class="text-12px op-06">Your wallet</p>
-                                <p class="text-14px">0x003f54ffs</p>
+                                <n-spin :show="!isConnected">
+                                    <p class="text-12px op-06">Your wallet</p>
+                                    <p class="text-14px">
+                                        <n-ellipsis
+                                            v-if="isConnected"
+                                            :tooltip="true"
+                                            style="max-width: 100px; color: white"
+                                        >
+                                            {{ address }}
+                                        </n-ellipsis>
+                                    </p>
+                                </n-spin>
                             </div>
                         </div>
                     </div>
@@ -41,21 +71,33 @@
                 <div class="party-form-w display-grid gap-32">
                     <h2 class="text-accent-900 text-center">Party members</h2>
                     <div class="display-grid gap-8">
-                        <div class="add-member display-flex justify-between align-items-center">
+                        <div
+                            v-for="members in createPartyForm.partyMembers"
+                            :key="members.id"
+                            class="add-member display-flex justify-between align-items-center"
+                        >
                             <div class="display-flex gap-16">
                                 <div class="member-revenue-w">
-                                    <p class="op-06">15%</p>
+                                    <p class="op-06">{{ members.revenue }}%</p>
                                 </div>
                                 <div class="display-grid gap-2">
-                                    <p>Telegram members</p>
-                                    <p class="text-16px op-06">Those who joined party via TG</p>
+                                    <p>{{ members.name }}</p>
+                                    <p class="text-16px op-06">{{ members.description }}</p>
                                 </div>
                             </div>
                             <div class="display-flex gap-16">
-                                <button class="main-custom-btn gray-btn">
+                                <button
+                                    class="main-custom-btn gray-btn"
+                                    type="button"
+                                    @click="editPartyMember(members)"
+                                >
                                     <span><n-icon :component="Pencil" :depth="1" :size="16" color="#fff" /></span>
                                 </button>
-                                <button class="main-custom-btn red-btn">
+                                <button
+                                    class="main-custom-btn red-btn"
+                                    type="button"
+                                    @click="deletePartyMemberById(members.id)"
+                                >
                                     <span><n-icon :component="TrashBin" :depth="1" :size="16" color="#fff" /></span>
                                 </button>
                             </div>
@@ -80,30 +122,27 @@
                     <h2 class="text-16px text-center">Your revenue will be distributed like this:</h2>
                     <div class="revenue-distributed-w display-flex gap-8">
                         <div
+                            :style="{ maxWidth: `${totalShare}%`, minWidth: '10%' }"
                             class="revenue-distributed-holder display-flex align-items-center justify-center"
-                            style="max-width: 80%; min-width: 15%"
                         >
                             <div class="revenue-distributed-info display-grid gap-2">
-                                <p>80%</p>
+                                <p>{{ totalShare }}%</p>
                                 <p class="text-16px op-06">@malamuth (you)</p>
                             </div>
                         </div>
                         <div
+                            v-for="members in createPartyForm.partyMembers"
+                            :key="members.id"
+                            :style="{ maxWidth: `${members.revenue}%`, minWidth: '10%' }"
                             class="revenue-distributed-holder display-flex align-items-center justify-center"
-                            style="max-width: 20%; min-width: 15%"
                         >
                             <div class="revenue-distributed-info display-grid gap-2">
-                                <p>15%</p>
-                                <p class="text-16px op-06">Telegram members</p>
-                            </div>
-                        </div>
-                        <div
-                            class="revenue-distributed-holder display-flex align-items-center justify-center"
-                            style="max-width: 5%; min-width: 15%"
-                        >
-                            <div class="revenue-distributed-info display-grid gap-2">
-                                <p>5%</p>
-                                <p class="text-16px op-06">X members</p>
+                                <p>{{ members.revenue }}%</p>
+                                <p class="text-16px op-06">
+                                    <n-ellipsis :tooltip="true" style="max-width: 150px">
+                                        {{ members.name }}
+                                    </n-ellipsis>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -123,11 +162,25 @@
             <div class="quests-card-modal-content p-tb-24px mt-40">
                 <h1 class="text-center">Add type of members</h1>
                 <div class="display-grid gap-8 mt-40">
-                    <n-input v-model:value="addtypename" placeholder="Name" size="large" type="text" />
-                    <n-input v-model:value="addtypedes" placeholder="Description" size="large" type="text" />
-                    <n-input v-model:value="addtyperev" placeholder="Revenue share %" size="large" type="text" />
-                    <button class="main-custom-btn width-full" type="button">
-                        <span>Add</span>
+                    <n-input v-model:value.trim="createMembersForm.name" placeholder="Name" size="large" type="text" />
+                    <n-input
+                        v-model:value.trim="createMembersForm.description"
+                        placeholder="Description"
+                        size="large"
+                        type="text"
+                    />
+                    <n-input-number
+                        v-model:value.trim="createMembersForm.revenue"
+                        :default-value="null"
+                        :max="createPartyForm.share ? 100 - createPartyForm.share : 100"
+                        :min="1"
+                        :placeholder="`Revenue share max ${createPartyForm.share ? 100 - createPartyForm.share : 100}% `"
+                        :show-button="false"
+                        :step="1"
+                        size="large"
+                    />
+                    <button class="main-custom-btn width-full" type="button" @click="addPartyMember">
+                        <span>{{ editIndex >= 0 ? 'Save' : 'Add' }}</span>
                     </button>
                 </div>
             </div>
@@ -138,15 +191,114 @@
 <script lang="ts" setup>
 import { RouterLink } from 'vue-router'
 import { Add, ChevronBackOutline, Pencil, TrashBin, Wallet } from '@vicons/ionicons5'
-import { ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
+import { useAccount } from '@wagmi/vue'
+import { useMessage } from 'naive-ui'
 
+const message = useMessage()
+const { isConnected, address } = useAccount()
 const showModal = ref(false)
-const partydetailsname = ref(null)
-const partydetailsdes = ref(null)
-const sharevalue = ref(null)
-const addtypename = ref(null)
-const addtypedes = ref(null)
-const addtyperev = ref(null)
+const editIndex = ref<number>(-1)
+function useRandomKey() {
+    return Math.random().toString(36).substring(7)
+}
+interface IPartyMembers {
+    id: string | number
+    name: string
+    description: string
+    revenue: number | null
+}
+interface ICreatePartyForm {
+    name: string
+    description: string
+    share: number | null
+    partyMembers: IPartyMembers[]
+}
+
+const createPartyForm = reactive<ICreatePartyForm>({
+    name: '',
+    description: '',
+    share: null,
+    partyMembers: [
+        {
+            id: 'asdad',
+            name: 'Telegram members',
+            description: 'Those who joined party via TG',
+            revenue: 15
+        }
+    ]
+})
+
+const createMembersForm = reactive<IPartyMembers>({
+    id: '',
+    name: '',
+    description: '',
+    revenue: null
+})
+const totalRevenue = computed(() => {
+    return createPartyForm.partyMembers.reduce((sum, member) => {
+        return sum + (member.revenue ?? 0)
+    }, 0)
+})
+const totalShare = computed(() => (createPartyForm.share ? `${createPartyForm.share}` : `${100 - totalRevenue.value}`))
+
+const validateMembersForm = computed(
+    () => !!createMembersForm.name && createMembersForm.description && createMembersForm.revenue
+)
+
+const resetPartyMember = () => {
+    createMembersForm.id = ''
+    createMembersForm.name = ''
+    createMembersForm.description = ''
+    createMembersForm.revenue = null
+}
+
+const editPartyMember = (member: IPartyMembers) => {
+    const index = createPartyForm.partyMembers.findIndex(m => m.id === member.id)
+    if (index !== -1) {
+        editIndex.value = index
+        showModal.value = true
+        const { id, name, description, revenue } = member
+        Object.assign(createMembersForm, { id, name, description, revenue })
+    }
+}
+
+const addPartyMember = () => {
+    if (validateMembersForm.value) {
+        if (editIndex.value >= 0) {
+            createPartyForm.partyMembers[editIndex.value] = { ...createMembersForm }
+            editIndex.value = -1
+        } else {
+            const newForm = {
+                id: useRandomKey(),
+                name: createMembersForm.name,
+                description: createMembersForm.description,
+                revenue: createMembersForm.revenue
+            }
+            createPartyForm.partyMembers.push(newForm)
+        }
+        showModal.value = false
+        resetPartyMember()
+        message.success('Party members created')
+    } else {
+        message.warning('Fill in all fields correctly')
+    }
+}
+
+const deletePartyMemberById = (id: IPartyMembers['id']) => {
+    const index = createPartyForm.partyMembers.findIndex(member => member.id === id)
+    if (index !== -1) {
+        createPartyForm.partyMembers.splice(index, 1)
+    }
+}
+
+watch(
+    () => showModal.value,
+    newOppo => {
+        console.log(777, editIndex.value)
+        if (!newOppo) resetPartyMember()
+    }
+)
 </script>
 <style>
 .max-w-648 {

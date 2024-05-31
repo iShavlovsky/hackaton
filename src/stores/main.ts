@@ -1,11 +1,11 @@
 import { ref } from 'vue'
-import { useAccount, useChainId, useChains, useClient } from '@wagmi/vue'
+import { useAccount } from '@wagmi/vue'
 import 'viem/window'
 import { type Chain, createWalletClient, custom, type DeployContractParameters } from 'viem'
 import { wagmiContract } from '@/contracts/contract'
 import { defineStore } from 'pinia'
 
-export const useUserStore = defineStore('user', () => {
+export const useMainStore = defineStore('main', () => {
     const addressUser = ref<`0x${string}` | undefined>(undefined)
     const chainUser = ref<Chain | undefined>(undefined)
 
@@ -26,17 +26,11 @@ export const useUserStore = defineStore('user', () => {
         return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`
     }
 
-    const accountCheck = useAccount()
-    const chains = useChains()
-    const chainId = useChainId()
-    const client = useClient({
-        chainId
-    })
-
     async function deployContract() {
+        const { address, chain } = getAccount()
         const walletClient = createWalletClient({
-            account: accountCheck.address.value,
-            chain: accountCheck.chain.value,
+            account: address.value,
+            chain: chain.value,
             transport: custom(window.ethereum!)
         })
         const [account] = await walletClient.getAddresses()
