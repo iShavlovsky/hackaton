@@ -194,6 +194,7 @@ import { Add, ChevronBackOutline, Pencil, TrashBin, Wallet } from '@vicons/ionic
 import { computed, reactive, ref, watch } from 'vue'
 import { useAccount } from '@wagmi/vue'
 import { useMessage } from 'naive-ui'
+import type { ICreatePartyForm, IPartyMembers } from '@/types'
 
 const message = useMessage()
 const { isConnected, address } = useAccount()
@@ -202,20 +203,8 @@ const editIndex = ref<number>(-1)
 function useRandomKey() {
     return Math.random().toString(36).substring(7)
 }
-interface IPartyMembers {
-    id: string | number
-    name: string
-    description: string
-    revenue: number | null
-}
-interface ICreatePartyForm {
-    name: string
-    description: string
-    share: number | null
-    partyMembers: IPartyMembers[]
-}
 
-const createPartyForm = reactive<ICreatePartyForm>({
+const createPartyForm = reactive<Omit<ICreatePartyForm, 'owner'>>({
     name: '',
     description: '',
     share: null,

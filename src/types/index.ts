@@ -14,3 +14,17 @@ export interface IQuestCard {
     reward: string
     events: IEventCard[]
 }
+
+export interface IPartyMembers {
+    id: string | number
+    name: string
+    description: string
+    revenue: number | null
+}
+export interface ICreatePartyForm {
+    name: string
+    description: string
+    owner: string
+    share: number | null
+    partyMembers: IPartyMembers[]
+}

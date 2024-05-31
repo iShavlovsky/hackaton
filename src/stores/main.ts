@@ -1,13 +1,30 @@
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useAccount } from '@wagmi/vue'
 import 'viem/window'
 import { type Chain, createWalletClient, custom, type DeployContractParameters } from 'viem'
 import { wagmiContract } from '@/contracts/contract'
 import { defineStore } from 'pinia'
+import type { ICreatePartyForm } from '@/types'
 
 export const useMainStore = defineStore('main', () => {
     const addressUser = ref<`0x${string}` | undefined>(undefined)
     const chainUser = ref<Chain | undefined>(undefined)
+
+    const party = reactive<ICreatePartyForm>({
+        name: 'Glitch & Glam',
+        description:
+            "It's time for a game party focused on Linea token quests! Join forces with other gamers, tackle challenges, and earn tokens together. Let's make this a night of shared achievements",
+        owner: 'malamuth',
+        share: null,
+        partyMembers: [
+            {
+                id: 'asdad',
+                name: 'Telegram members',
+                description: 'Those who joined party via TG',
+                revenue: 15
+            }
+        ]
+    })
 
     const getAccount = () => {
         const { isConnected, address, chain } = useAccount()
@@ -49,5 +66,5 @@ export const useMainStore = defineStore('main', () => {
         }
     }
 
-    return { addressUser, chainUser, getAccount, shortenAddress, deployContract }
+    return { addressUser, chainUser, party, getAccount, shortenAddress, deployContract }
 })
