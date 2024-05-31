@@ -107,7 +107,7 @@
                                 <span v-if="activeEventIndex != i && !event.status" class="step-lock">
                                     <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
                                 </span>
-                                <span v-if="event.status" class="step-check">
+                                <span v-if="event.status && activeEventIndex" class="step-check">
                                     <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
                                 </span>
                             </button>
