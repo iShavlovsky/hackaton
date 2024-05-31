@@ -104,7 +104,7 @@
                                     </span>
                                     <span class="step-title">{{ event.title }}</span>
                                 </span>
-                                <span v-if="!event.status" class="step-lock">
+                                <span v-if="activeEventIndex != i && !event.status" class="step-lock">
                                     <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
                                 </span>
                                 <span v-if="event.status" class="step-check">
