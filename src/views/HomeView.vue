@@ -133,6 +133,10 @@ const questCards: IQuestCard[] = reactive([
         tags: ['NFT marketplace'],
         totalUsers: '4k',
         reward: '15 TBA',
+        user1: '/images/user1.jpg',
+        user2: '/images/user2.jpg',
+        user3: '/images/user3.jpg',
+        questSteps: 4,
         events: [
             {
                 title: 'Intro to Ape Bond Value',
@@ -166,8 +170,12 @@ const questCards: IQuestCard[] = reactive([
         title: 'Swapping on Linea',
         description: 'Explore the Linea ecosystem and its top DEXes.\n',
         tags: ['DeFi'],
-        totalUsers: '4k',
+        totalUsers: '435',
         reward: '15 TBA',
+        user1: '/images/user4.jpg',
+        user2: '/images/user5.jpg',
+        user3: '/images/user5-1.jpg',
+        questSteps: 5,
         events: [
             {
                 title: 'Intro to Ape Bond Value',

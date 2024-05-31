@@ -74,6 +74,7 @@ const darkThemeOverrides: GlobalThemeOverrides = {
         color: '#151518',
         colorInfo: '#3D3D41',
         colorSuccess: '#3D3D41',
+        iconColorSuccess: '#92FE75',
         colorError: '#3D3D41',
         colorWarning: '#3D3D41',
         textColor: '#fff',

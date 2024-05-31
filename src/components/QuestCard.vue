@@ -1,24 +1,44 @@
 <template>
-    <div class="quests-card pointer" @click="showModal = true">
-        <n-avatar :size="300" :src="props.card.imageSrc" bordered class="quests-pointer pointer" />
+    <div class="quests-card display-flex flex-column pointer" @click="showModal = true">
+        <n-avatar :size="300" :src="props.card.imageSrc" bordered class="quest-avatar pointer" />
         <n-space class="quests-card-tag-w">
             <n-tag v-for="tag in props.card.tags" :key="tag" :bordered="false" type="info">{{ tag }}</n-tag>
         </n-space>
-        <div class="quests-card__header">
-            <div class="quests-card__title display-flex flex-column gap-2 quests-pointer">
+        <div class="quests-card__header display-flex flex-column height-full justify-between">
+            <div class="quests-card__title display-flex flex-column gap-2">
                 <h2>{{ props.card.title }}</h2>
                 <p class="op-06">
                     <n-ellipsis line-clamp="1">{{ props.card.description }}</n-ellipsis>
                 </p>
             </div>
+            <div class="display-flex align-items-center justify-between mt-16">
+                <div class="display-flex gap-4 align-items-center">
+                    <div class="round-ico-w">
+                        <n-icon :component="FileTrayFull" :size="16" class="reward-ico" color="#fff" />
+                    </div>
+                    <p class="text-12px">{{ props.card.questSteps }} steps</p>
+                </div>
+                <div class="display-flex align-items-center gap-8">
+                    <p class="text-12px">
+                        <span>{{ props.card.totalUsers }}</span>
+                        users
+                    </p>
+                    <div class="">
+                        <n-avatar :size="28" :src="props.card.user1" bordered class="users-quest-avatar" round />
+                        <n-avatar :size="28" :src="props.card.user2" bordered class="users-quest-avatar" round />
+                        <n-avatar :size="28" :src="props.card.user3" bordered class="users-quest-avatar" round />
+                    </div>
+                </div>
+            </div>
         </div>
+
         <n-modal v-model:show="showModal" class="quest-custom-modal" preset="dialog" title="Dialog">
             <template #header>
                 <div></div>
             </template>
             <div class="quests-card-modal-content">
                 <div class="quests-card-modal-head display-flex gap-40 align-items-center">
-                    <n-avatar :size="120" bordered src="" />
+                    <n-avatar :size="120" :src="props.card.imageSrc" bordered />
                     <div class="quests-card__header display-flex flex-column gap-6">
                         <h2>{{ props.card.title }}</h2>
                         <p class="op-06">{{ props.card.description }}</p>
@@ -28,9 +48,27 @@
                                 users
                             </p>
                             <div class="">
-                                <n-avatar :size="28" bordered class="users-quest-avatar" round src="" />
-                                <n-avatar :size="28" bordered class="users-quest-avatar" round src="" />
-                                <n-avatar :size="28" bordered class="users-quest-avatar" round src="" />
+                                <n-avatar
+                                    :size="28"
+                                    :src="props.card.user1"
+                                    bordered
+                                    class="users-quest-avatar"
+                                    round
+                                />
+                                <n-avatar
+                                    :size="28"
+                                    :src="props.card.user2"
+                                    bordered
+                                    class="users-quest-avatar"
+                                    round
+                                />
+                                <n-avatar
+                                    :size="28"
+                                    :src="props.card.user3"
+                                    bordered
+                                    class="users-quest-avatar"
+                                    round
+                                />
                             </div>
                         </div>
                     </div>
@@ -42,7 +80,9 @@
                                 <p>Reward</p>
                                 <h2>{{ props.card.reward }}</h2>
                             </div>
-                            <n-icon :component="AmericanFootball" :size="97" class="reward-ico" color="#fff" />
+                            <div class="">
+                                <img alt="You are the King" class="reward-ico" src="/images/korona.png" />
+                            </div>
                         </div>
                         <div class="padding-tb-8px">
                             <h3>Finish all steps</h3>
@@ -105,7 +145,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import { AmericanFootball, CheckmarkSharp, LockClosed, Star } from '@vicons/ionicons5'
+import { CheckmarkSharp, FileTrayFull, LockClosed, Star } from '@vicons/ionicons5'
 import type { IEventCard, IQuestCard } from '@/types'
 
 const props = defineProps<{
@@ -159,16 +199,16 @@ onMounted(() => {
     max-width: 316px;
 }
 
+.quest-avatar {
+    min-height: 300px;
+}
+
 .quests-card__header {
     padding: 16px 12px;
 }
 
 .quests-card-tag-w {
     padding: 20px 12px 0 12px;
-}
-
-.quests-pointer {
-    cursor: pointer;
 }
 
 .quests-card-modal-head {
@@ -194,10 +234,10 @@ onMounted(() => {
     .n-dialog__icon {
         display: none;
     }
+}
 
-    .users-quest-avatar {
-        margin-right: -12px;
-    }
+.users-quest-avatar {
+    margin-right: -12px;
 }
 
 .steps-sidebar-w {
@@ -212,6 +252,9 @@ onMounted(() => {
 
     .reward-ico {
         margin-top: -20px;
+        width: 97px;
+        height: 97px;
+        transform: rotate(15deg);
     }
 }
 
@@ -253,6 +296,14 @@ onMounted(() => {
             background-color: #453298;
         }
     }
+}
+
+.round-ico-w {
+    width: 28px;
+    height: 28px;
+    padding: 6px;
+    background-color: #2a2a2e;
+    border-radius: 50%;
 }
 
 .mb-92 {

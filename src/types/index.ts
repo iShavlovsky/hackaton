@@ -12,6 +12,10 @@ export interface IQuestCard {
     tags: string[]
     totalUsers: string
     reward: string
+    user1: string
+    user2: string
+    user3: string
+    questSteps: number
     events: IEventCard[]
 }
 
@@ -21,6 +25,7 @@ export interface IPartyMembers {
     description: string
     revenue: number | null
 }
+
 export interface ICreatePartyForm {
     name: string
     description: string
