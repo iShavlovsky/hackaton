@@ -221,6 +221,7 @@ onMounted(() => {
     border-radius: 50px;
     background-color: #1d1d21;
     text-align: left;
+    border: 1px solid transparent;
 
     .step-ico {
         border-radius: 50%;
@@ -244,18 +245,14 @@ onMounted(() => {
             background-color: #453298;
         }
     }
+
     &.done-step {
         border: 1px solid #8f75fe;
+
         .step-ico {
             background-color: #453298;
         }
     }
-}
-
-.quests-modal-step-info {
-    padding: 40px;
-    border-radius: 28px;
-    background-color: #1d1d21;
 }
 
 .mb-92 {

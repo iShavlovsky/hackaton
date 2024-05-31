@@ -1,5 +1,5 @@
 <template>
-    <footer class="footer display-flex align-items-center">
+    <footer class="footer-w display-flex align-items-center">
         <div class="container display-flex flex-row justify-between">
             <p>© revshareparty</p>
             <nav class="footer-nav">
@@ -20,7 +20,7 @@
                         <a>Privacy</a>
                     </li>
                     <li>
-                        <RouterLink to="/about">About</RouterLink>
+                        <RouterLink to="/create-party">create-party</RouterLink>
                     </li>
                 </ul>
             </nav>
@@ -45,9 +45,10 @@
 import { RouterLink } from 'vue-router'
 </script>
 <style lang="scss" scoped>
-.footer {
+.footer-w {
     height: 133px;
     width: 100%;
+    padding: 50px 0;
 
     .container {
         width: 100%;

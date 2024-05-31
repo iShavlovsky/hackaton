@@ -73,6 +73,15 @@ const darkThemeOverrides: GlobalThemeOverrides = {
         color: '#151518',
         colorInfo: '#8F75FE',
         colorSuccess: '#4b6745'
+    },
+    Input: {
+        border: '1px solid #404042',
+        placeholderColor: '#A1A1A3',
+        textColor: '#92FE75',
+        color: '#151518',
+        colorFocus: '#151518',
+        borderRadius: '12px',
+        heightLarge: '52px'
     }
 }
 
@@ -82,6 +91,6 @@ const lightThemeOverrides: GlobalThemeOverrides = {
 </script>
 <style lang="scss" scoped>
 .main-content {
-    height: calc(100vh - 233px);
+    min-height: calc(100vh - 233px);
 }
 </style>

@@ -33,6 +33,32 @@ p {
   font-size: 18px;
 }
 
+.text-accent-900 {
+  font-size: 32px;
+}
+
+.text-12px {
+  font-size: 12px;
+}
+
+.text-14px {
+  font-size: 14px;
+}
+
+.text-16px {
+  font-size: 16px;
+}
+
+.text-40px {
+  font-size: 40px;
+}
+
+.quests-modal-step-info {
+  padding: 40px;
+  border-radius: 28px;
+  background-color: #1d1d21;
+}
+
 .main-custom-btn {
   background-color: #92FE75;
   padding: 14px;
@@ -40,16 +66,27 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
+  justify-items: center;
   gap: 8px;
   font-weight: 600;
+  color: #0F0F0F;
 
   &.small-btn {
     padding: 6px 12px;
+    border-radius: 8px;
   }
 
   &.gray-btn {
     padding: 6px;
     background-color: #252526;
     color: white;
+    border-radius: 8px;
+  }
+
+  &.red-btn {
+    padding: 6px;
+    background-color: #983241;
+    color: white;
+    border-radius: 8px;
   }
 }

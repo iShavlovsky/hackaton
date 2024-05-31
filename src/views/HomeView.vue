@@ -74,12 +74,12 @@
                         </n-space>
                         <div class="px16-divider"></div>
 
-                        <button class="main-custom-btn width-full">
-                            <span>
-                                <n-icon :component="Add" :depth="5" :size="16" color="currentColor" />
+                        <RouterLink class="main-custom-btn width-full" to="/create-party">
+                            <span class="display-flex">
+                                <n-icon :component="Add" :depth="1" :size="24" color="currentColor" />
                             </span>
-                            <span>Create party</span>
-                        </button>
+                            <p>Create party</p>
+                        </RouterLink>
                     </n-tab-pane>
                     <n-tab-pane :tab="`Quests ${questCards.length}`" name="quests">
                         <div class="display-flex gap-8">
@@ -108,6 +108,7 @@ import { useAccount } from '@wagmi/vue'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
+import { RouterLink } from 'vue-router'
 
 const store = useUserStore()
 const { isConnected, address } = useAccount()
@@ -248,16 +249,8 @@ const rows: TableRowData[] = [
 ]
 </script>
 <style lang="scss">
-.p-tb-24px {
-    padding: 24px 0;
-}
-
 .card-tabs .n-tabs-nav--bar-type {
     padding-left: 4px;
-}
-
-.text-12px {
-    font-size: 12px;
 }
 
 .px16-divider {
