@@ -127,7 +127,7 @@ const copyHandler = (textCopy: string) => {
 const questCards: IQuestCard[] = reactive([
     {
         id: 2,
-        imageSrc: '',
+        imageSrc: '/images/apebol.jpg',
         title: 'Buying Bonds on Linea with ApeBond',
         description: "Celebrate ApeBond's recent launch on the Linea Mainnet",
         tags: ['NFT marketplace'],
@@ -162,7 +162,7 @@ const questCards: IQuestCard[] = reactive([
     },
     {
         id: 4,
-        imageSrc: '',
+        imageSrc: '/images/linea.jpg',
         title: 'Swapping on Linea',
         description: 'Explore the Linea ecosystem and its top DEXes.\n',
         tags: ['DeFi'],

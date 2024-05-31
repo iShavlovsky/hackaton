@@ -1,6 +1,6 @@
 <template>
     <div class="quests-card pointer" @click="showModal = true">
-        <n-avatar :size="300" bordered class="quests-pointer pointer" src="" />
+        <n-avatar :size="300" :src="props.card.imageSrc" bordered class="quests-pointer pointer" />
         <n-space class="quests-card-tag-w">
             <n-tag v-for="tag in props.card.tags" :key="tag" :bordered="false" type="info">{{ tag }}</n-tag>
         </n-space>

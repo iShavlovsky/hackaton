@@ -39,18 +39,17 @@
                     </span>
                     <span>Invite</span>
                 </button>
-                <button class="main-custom-btn gray-btn">
+                <RouterLink class="main-custom-btn gray-btn" to="/party-page">
                     <span>
                         <n-icon :component="ChevronForward" :size="16" color="currentColor" />
                     </span>
-                </button>
+                </RouterLink>
             </div>
         </td>
     </tr>
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue'
 import type { TableRowData } from './tableElement.type.ts'
 import { ChevronForward, ShareSocialSharp } from '@vicons/ionicons5'
 
