@@ -2,7 +2,7 @@
     <section>
         <div class="container main-container-padding">
             <div class="display-flex flex-row gap-40 align-items-center p-tb-24px">
-                <n-avatar :size="120" round src="" />
+                <n-avatar :size="120" round src="/images/avatar-main.jpg" />
 
                 <div class="display-flex flex-column gap-8">
                     <div class="display-flex flex-row gap-8 align-items-center">
@@ -190,6 +190,12 @@ const questCards: IQuestCard[] = reactive([
                 status: false
             },
             {
+                title: 'Join ApeBond on Discord',
+                description:
+                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                status: false
+            },
+            {
                 title: 'Join ApeBond on TG',
                 description:
                     'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
@@ -222,13 +228,13 @@ const rows: TableRowData[] = [
     {
         index: 1,
         party: {
-            avatar: '',
+            avatar: '/images/party1.jpg',
             name: 'Glitch & Glam',
             description:
                 "It's time for a game party focused on Linea token quests! Join forces with other gamers, tackle challenges, and earn tokens together. Let's m"
         },
         owner: {
-            avatar: '',
+            avatar: '/images/user7.jpg',
             name: '@meuw'
         },
         people: 28,
@@ -240,13 +246,13 @@ const rows: TableRowData[] = [
     {
         index: 2,
         party: {
-            avatar: '',
+            avatar: '/images/party2.jpg',
             name: 'Glitch & Glam',
             description:
                 "It's time for a game party focused on Linea token quests! Join forces with other gamers, tackle challenges, and earn tokens together. Let's m"
         },
         owner: {
-            avatar: '',
+            avatar: '/images/avatar-main.jpg',
             name: '@malamuth (you)'
         },
         people: 28,
