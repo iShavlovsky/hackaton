@@ -108,8 +108,7 @@
 <script lang="ts" setup>
 import { Link, ShareSocialSharp } from '@vicons/ionicons5'
 import ComradeTableElement from '@/components/ComradeTableElement.vue'
-
-import { ComradeTableElementProps } from '@/components/СomradeTableElementProps.type.ts'
+import type { ComradeTableElementProps } from '@/components/СomradeTableElementProps.type.ts'
 import { ref } from 'vue'
 
 const showModal = ref(false)

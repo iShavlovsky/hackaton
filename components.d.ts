@@ -9,7 +9,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     Balance: typeof import('./src/components/Balance.vue')['default']
     ComradeTableElement: typeof import('./src/components/ComradeTableElement.vue')['default']
-    Footer: typeof import('./src/components/Footer.vue')['default']
     FooterComponent: typeof import('./src/components/FooterComponent.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
@@ -20,7 +19,6 @@ declare module 'vue' {
     NFlex: typeof import('naive-ui')['NFlex']
     NGlobalStyle: typeof import('naive-ui')['NGlobalStyle']
     NIcon: typeof import('naive-ui')['NIcon']
-    NImage: typeof import('naive-ui')['NImage']
     NInput: typeof import('naive-ui')['NInput']
     NInputNumber: typeof import('naive-ui')['NInputNumber']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']

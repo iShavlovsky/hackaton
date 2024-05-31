@@ -38,7 +38,7 @@
 
 <script lang="ts" setup>
 import { CopyOutline } from '@vicons/ionicons5'
-import { ComradeTableElementProps } from './СomradeTableElementProps.type.ts'
+import type { ComradeTableElementProps } from './СomradeTableElementProps.type.ts'
 
 const props = defineProps<ComradeTableElementProps>()
 </script>
