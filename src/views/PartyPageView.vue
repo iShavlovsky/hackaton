@@ -3,7 +3,7 @@
         <div class="container main-container-padding">
             <div class="display-flex justify-between p-tb-24px">
                 <div class="max-w-840 display-flex gap-40">
-                    <n-avatar :size="120" bordered class="min-w-120px" src="" />
+                    <n-avatar :size="120" bordered class="min-w-120px" src="/images/QuantumQuestParty.jpg" />
                     <div class="display-grid gap-8">
                         <h1>Quantum Quest</h1>
                         <p class="op-06">
@@ -116,7 +116,7 @@ const rows: ComradeTableElementProps[] = [
     {
         index: 1,
         party: {
-            avatar: ''
+            avatar: '/images/avatar-main.jpg'
         },
         username: '@malamuth (you)',
         type: 'Owner',
@@ -130,16 +130,58 @@ const rows: ComradeTableElementProps[] = [
     {
         index: 2,
         party: {
-            avatar: ''
+            avatar: '/images/user5-1.jpg'
         },
         username: '@mitch',
         type: 'Telegram members',
-        address: '0x70AD...1D7af9',
+        address: '0x40AD...1hJaf4',
         share: '0.5%',
         yourTokens: 234,
         yourTokensChange: 8,
         oneDayTokens: 12,
         oneDayTokensChange: 6
+    },
+    {
+        index: 3,
+        party: {
+            avatar: '/images/user5.jpg'
+        },
+        username: '@Monster',
+        type: 'Telegram members',
+        address: '0x90Ah...6D70bG',
+        share: '0.5%',
+        yourTokens: 1234,
+        yourTokensChange: 18,
+        oneDayTokens: 212,
+        oneDayTokensChange: 7
+    },
+    {
+        index: 4,
+        party: {
+            avatar: '/images/user7.jpg'
+        },
+        username: '@Graydrak',
+        type: 'Telegram members',
+        address: '0x70bG...7j7ak4',
+        share: '0.5%',
+        yourTokens: 1376,
+        yourTokensChange: -8,
+        oneDayTokens: 32,
+        oneDayTokensChange: -2
+    },
+    {
+        index: 5,
+        party: {
+            avatar: '/images/user4.jpg'
+        },
+        username: '@rinaxdc',
+        type: 'Telegram members',
+        address: '0x70AD...1D7af9',
+        share: '0.5%',
+        yourTokens: 123,
+        yourTokensChange: 5,
+        oneDayTokens: 98,
+        oneDayTokensChange: -1
     }
 ]
 </script>
