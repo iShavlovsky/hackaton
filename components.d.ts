@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Balance: typeof import('./src/components/Balance.vue')['default']
+    ComradeTableElement: typeof import('./src/components/ComradeTableElement.vue')['default']
+    ComradTableElement: typeof import('./src/components/ComradTableElement.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
