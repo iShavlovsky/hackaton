@@ -109,6 +109,7 @@ import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
 import { RouterLink } from 'vue-router'
+import { reactive } from 'vue'
 
 const store = useMainStore()
 const { isConnected, address } = useAccount()

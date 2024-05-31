@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { AmericanFootball, CheckmarkSharp, LockClosed, Star } from '@vicons/ionicons5'
 import type { IEventCard, IQuestCard } from '@/types'
 
