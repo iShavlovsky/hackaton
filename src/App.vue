@@ -6,7 +6,7 @@
                 <main class="main-content">
                     <RouterView />
                 </main>
-                <Footer />
+                <FooterComponent />
                 <n-global-style />
             </n-message-provider>
         </n-config-provider>
@@ -16,6 +16,7 @@
 import { type GlobalThemeOverrides, NThemeEditor } from 'naive-ui'
 import { useTitle } from '@vueuse/core'
 import NavBar from '@/components/NavBar.vue'
+import FooterComponent from '@/components/FooterComponent.vue'
 
 useTitle('Rev Share Party')
 const darkThemeOverrides: GlobalThemeOverrides = {

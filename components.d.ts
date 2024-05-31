@@ -11,6 +11,7 @@ declare module 'vue' {
     ComradeTableElement: typeof import('./src/components/ComradeTableElement.vue')['default']
     ComradTableElement: typeof import('./src/components/ComradTableElement.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
+    FooterComponent: typeof import('./src/components/FooterComponent.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
