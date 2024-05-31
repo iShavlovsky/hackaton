@@ -20,7 +20,7 @@
                         <a>Privacy</a>
                     </li>
                     <li>
-                        <RouterLink to="/about">About</RouterLink>
+                        <RouterLink to="/create-party">About</RouterLink>
                     </li>
                 </ul>
             </nav>

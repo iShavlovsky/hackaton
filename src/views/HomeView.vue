@@ -137,10 +137,6 @@ const rows: TableRowData[] = [
 ]
 </script>
 <style lang="scss">
-.p-tb-24px {
-    padding: 24px 0;
-}
-
 .card-tabs .n-tabs-nav--bar-type {
     padding-left: 4px;
 }
