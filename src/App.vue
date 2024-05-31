@@ -72,8 +72,13 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     },
     Message: {
         color: '#151518',
-        colorInfo: '#8F75FE',
-        colorSuccess: '#4b6745'
+        colorInfo: '#3D3D41',
+        colorSuccess: '#3D3D41',
+        colorError: '#3D3D41',
+        colorWarning: '#3D3D41',
+        textColor: '#fff',
+        borderRadius: '12px',
+        fontSize: '16px'
     },
     Input: {
         border: '1px solid #404042',
