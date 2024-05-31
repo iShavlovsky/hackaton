@@ -5,7 +5,7 @@
             <nav class="footer-nav">
                 <ul class="display-flex flex-row gap-40">
                     <li>
-                        <RouterLink to="/">Home</RouterLink>
+                        <RouterLink to="/party-page">party-page</RouterLink>
                     </li>
                     <li>
                         <a>Newsletter</a>
