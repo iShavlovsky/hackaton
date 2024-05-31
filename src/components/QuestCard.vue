@@ -107,6 +107,9 @@
                                 <span v-if="!event.status" class="step-lock">
                                     <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
                                 </span>
+                                <span v-if="event.status" class="step-check">
+                                    <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
+                                </span>
                             </button>
 
                             <button
@@ -123,6 +126,9 @@
                                 </span>
                                 <span v-if="!claimRewardsStep" class="step-lock">
                                     <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
+                                </span>
+                                <span v-if="claimRewardsStep" class="step-check">
+                                    <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
                                 </span>
                             </button>
                         </div>
@@ -145,7 +151,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
-import { CheckmarkSharp, FileTrayFull, LockClosed, Star } from '@vicons/ionicons5'
+import { Checkmark, CheckmarkSharp, FileTrayFull, LockClosed, Star } from '@vicons/ionicons5'
 import type { IEventCard, IQuestCard } from '@/types'
 
 const props = defineProps<{
@@ -279,6 +285,11 @@ onMounted(() => {
         padding: 6px;
         background-color: #313136;
         border-radius: 8px;
+    }
+
+    .step-check {
+        width: 28px;
+        height: 28px;
     }
 
     &.active-step {
