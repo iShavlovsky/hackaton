@@ -7,6 +7,7 @@ export interface Party {
 export interface Owner {
     avatar: string
     name: string
+    owner: boolean
 }
 
 export interface TableRowData {

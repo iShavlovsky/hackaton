@@ -22,18 +22,22 @@
         <td style="vertical-align: middle">
             <div class="display-flex flex-column">
                 <span>{{ yourTokens }}</span>
-                <span>{{ yourTokensPercentage }}%</span>
+                <span :style="{ color: yourTokensPercentage < 0 ? '#fe7589' : '#92fe75' }">
+                    {{ yourTokensPercentage }}%
+                </span>
             </div>
         </td>
         <td style="vertical-align: middle">
             <div class="display-flex flex-column">
                 <span>{{ totalDistributed }}</span>
-                <span>{{ totalDistributedPercentage }}%</span>
+                <span :style="{ color: totalDistributedPercentage < 0 ? '#fe7589' : '#92fe75' }">
+                    {{ totalDistributedPercentage }}%
+                </span>
             </div>
         </td>
         <td style="vertical-align: middle">
-            <div class="display-flex gap-8">
-                <button class="main-custom-btn small-btn">
+            <div class="display-flex gap-8 width-full justify-end">
+                <button v-if="owner.owner" class="main-custom-btn small-btn">
                     <span>
                         <n-icon :component="ShareSocialSharp" :size="16" color="currentColor" />
                     </span>

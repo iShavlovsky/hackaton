@@ -237,11 +237,12 @@ const rows: TableRowData[] = [
         },
         owner: {
             avatar: '/images/user7.jpg',
-            name: '@meuw'
+            name: '@meuw',
+            owner: false
         },
         people: 28,
-        yourTokens: 15069,
-        yourTokensPercentage: 34,
+        yourTokens: 3069,
+        yourTokensPercentage: -4,
         totalDistributed: 15069,
         totalDistributedPercentage: 34
     },
@@ -251,17 +252,18 @@ const rows: TableRowData[] = [
             avatar: '/images/party2.jpg',
             name: 'Glitch & Glam',
             description:
-                "It's time for a game party focused on Linea token quests! Join forces with other gamers, tackle challenges, and earn tokens together. Let's m"
+                "Join us for a game party where gamers unite to complete quests and earn Linea tokens. Team up, strategize, and conquer challenges together. Let's embark on this adventure and collect those tokens!"
         },
         owner: {
             avatar: '/images/avatar-main.jpg',
-            name: '@malamuth (you)'
+            name: '@malamuth (you)',
+            owner: true
         },
-        people: 28,
-        yourTokens: 15069,
-        yourTokensPercentage: 34,
-        totalDistributed: 15069,
-        totalDistributedPercentage: 34
+        people: 46,
+        yourTokens: 738,
+        yourTokensPercentage: 20,
+        totalDistributed: 2069,
+        totalDistributedPercentage: 7
     }
 ]
 </script>
