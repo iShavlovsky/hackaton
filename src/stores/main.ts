@@ -1,8 +1,6 @@
 import { reactive, ref } from 'vue'
 import { useAccount } from '@wagmi/vue'
-import 'viem/window'
-import { type Chain, createWalletClient, custom, type DeployContractParameters } from 'viem'
-import { wagmiContract } from '@/contracts/contract'
+import { type Chain } from 'viem'
 import { defineStore } from 'pinia'
 import type { ICreatePartyForm } from '@/types'
 
@@ -43,28 +41,5 @@ export const useMainStore = defineStore('main', () => {
         return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`
     }
 
-    async function deployContract() {
-        const { address, chain } = getAccount()
-        const walletClient = createWalletClient({
-            account: address.value,
-            chain: chain.value,
-            transport: custom(window.ethereum!)
-        })
-        const [account] = await walletClient.getAddresses()
-        if (!account) return
-        // @ts-ignore
-        const parameters: DeployContractParameters = {
-            ...wagmiContract,
-            account
-        }
-        try {
-            const hash = await walletClient.deployContract(parameters)
-            console.log('Account:', account)
-            console.log('Transaction Hash:', hash)
-        } catch (error) {
-            console.error('Error deploying contract:', error)
-        }
-    }
-
-    return { addressUser, chainUser, party, getAccount, shortenAddress, deployContract }
+    return { addressUser, chainUser, party, getAccount, shortenAddress }
 })
