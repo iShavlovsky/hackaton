@@ -1,8 +1,8 @@
 <template>
     <section>
         <div class="container main-container-padding">
-            <div class="display-flex justify-between p-tb-24px">
-                <div class="max-w-840 display-flex gap-40">
+            <div class="party-page-header-w display-flex justify-between p-tb-24px">
+                <div class="party-page-title-w max-w-840 display-flex gap-40">
                     <n-avatar :size="120" bordered class="min-w-120px" src="/images/QuantumQuestParty.jpg" />
                     <div class="display-grid gap-8">
                         <h1>Quantum Quest</h1>
@@ -13,7 +13,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="display-flex gap-8 align-self-end">
+                <div class="volume-party-w display-flex gap-8 align-self-end">
                     <div class="display-grid grid-cols-3 gap-4">
                         <div class="party-date-w display-grid gap-4">
                             <p class="text-14px op-06">1D Volume</p>
@@ -37,8 +37,8 @@
                 </div>
             </div>
 
-            <n-space class="mt-40" vertical>
-                <n-table striped>
+            <n-space class="table-w mt-40" vertical>
+                <n-table class="table-holder-party-page" striped>
                     <thead>
                         <tr>
                             <th style="vertical-align: top">#</th>
@@ -70,7 +70,7 @@
             </n-space>
         </div>
 
-        <n-modal v-model:show="showModal" class="quest-custom-modal min-w-648" preset="dialog" title="Dialog">
+        <n-modal v-model:show="showModal" class="quest-custom-modal modal-min-w-648" preset="dialog" title="Dialog">
             <template #header>
                 <div></div>
             </template>
@@ -206,8 +206,17 @@ const rows: ComradeTableElementProps[] = [
     color: white;
 }
 
-.min-w-648 {
+.modal-min-w-648 {
     min-width: 648px;
+    @media (max-width: 770px) {
+        min-width: 90%;
+    }
+    @media (max-width: 520px) {
+        .add-member {
+            display: grid;
+            gap: 16px;
+        }
+    }
 }
 
 .member-revenue-w {
@@ -223,6 +232,43 @@ const rows: ComradeTableElementProps[] = [
     &.add-member-ico {
         background-color: #1d1d21;
         border: 1px solid #5a5a5e;
+    }
+}
+
+.party-page-header-w {
+    @media (max-width: 1340px) {
+        .max-w-840 {
+            max-width: 600px;
+        }
+    }
+    @media (max-width: 1024px) {
+        flex-direction: column;
+        gap: 40px;
+    }
+}
+
+.table-holder-party-page {
+    min-width: 700px;
+    @media (max-width: 800px) {
+        .min-w-360px {
+            min-width: 200px;
+        }
+    }
+}
+
+.party-page-title-w {
+    @media (max-width: 520px) {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+.volume-party-w {
+    @media (max-width: 460px) {
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
     }
 }
 </style>

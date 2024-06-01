@@ -309,6 +309,9 @@ const rows: TableRowData[] = [
 
 .quest-cards-list-w {
     flex-wrap: wrap;
+    @media (max-width: 1090px) {
+        justify-content: center;
+    }
 }
 
 .table-holder {

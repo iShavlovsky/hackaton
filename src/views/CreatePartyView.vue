@@ -36,7 +36,7 @@
 
                     <div class="party-form-w display-grid gap-32">
                         <h2 class="text-accent-900 text-center">Your share</h2>
-                        <div class="display-grid grid-cols-2 gap-32">
+                        <div class="you-share-w display-grid grid-cols-2 gap-32">
                             <n-input-number
                                 v-model:value.trim="createPartyForm.share"
                                 :default-value="null"
@@ -78,7 +78,7 @@
                                 class="add-member display-flex justify-between align-items-center"
                             >
                                 <div class="display-flex gap-16">
-                                    <div class="member-revenue-w">
+                                    <div class="display-flex member-revenue-w">
                                         <p class="op-06">{{ members.revenue }}%</p>
                                     </div>
                                     <div class="display-grid gap-2">
@@ -109,7 +109,7 @@
                                 @click="showModal = true"
                             >
                                 <span class="display-flex gap-16 align-items-center">
-                                    <span class="member-revenue-w add-member-ico">
+                                    <span class="display-flex member-revenue-w add-member-ico">
                                         <span><n-icon :component="Add" :depth="1" :size="24" color="#fff" /></span>
                                     </span>
 
@@ -384,5 +384,8 @@ watch(
         transform: rotate(-90deg);
         white-space: nowrap;
     }
+}
+
+.you-share-w {
 }
 </style>

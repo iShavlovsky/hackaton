@@ -113,7 +113,7 @@ const handleSelect = (key: string) => {
 }
 
 .n-spin-content {
-    span {
+    .n-base-loading__container {
         color: #92fe75 !important;
     }
 }
