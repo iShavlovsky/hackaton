@@ -281,33 +281,6 @@ watch(
     }
 }
 
-.quest-custom-modal {
-    background-color: #151518;
-    min-width: 960px;
-    border-radius: 24px;
-    @media (max-width: 1024px) {
-        min-width: 90%;
-        h1 {
-            font-size: 23px;
-        }
-    }
-
-    .n-base-icon {
-        background-color: rgba(255, 255, 255, 0.6);
-        border-radius: 50%;
-        min-width: 28px;
-        min-height: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #151518;
-    }
-
-    .n-dialog__icon {
-        display: none;
-    }
-}
-
 .users-quest-avatar {
     margin-right: -12px;
 }
