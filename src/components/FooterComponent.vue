@@ -21,22 +21,22 @@
             <ul class="display-flex flex-row gap-4 justify-end">
                 <li>
                     <a class="social-footer pointer" title="Join our community in X">
-                        <img alt="X" src="/images/LogoX.svg" />
+                        <n-image alt="X" src="./images/LogoX.svg" />
                     </a>
                 </li>
                 <li>
                     <a class="social-footer pointer" title="Follow the news in our Telegram channel">
-                        <img alt="Telegram" src="/images/LogoTelegram.svg" />
+                        <n-image alt="Telegram" src="./images/LogoTelegram.svg" />
                     </a>
                 </li>
                 <li>
                     <a class="social-footer pointer" title="Join our Discord community">
-                        <img alt="Discord" src="/images/LogoDiscord.svg" />
+                        <n-image alt="Discord" src="./images/LogoDiscord.svg" />
                     </a>
                 </li>
                 <li>
                     <a class="social-footer pointer" title="Lets go check our videos">
-                        <img alt="Youtube" src="/images/LogoYoutube.svg" />
+                        <n-image alt="Youtube" src="./images/LogoYoutube.svg" />
                     </a>
                 </li>
             </ul>

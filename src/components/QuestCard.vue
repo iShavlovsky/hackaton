@@ -81,7 +81,7 @@
                                 <h2>{{ props.card.reward }}</h2>
                             </div>
                             <div class="">
-                                <img alt="You are the King" class="reward-ico" src="/images/korona.png" />
+                                <n-image alt="You are the King" class="reward-ico" src="./images/korona.png" />
                             </div>
                         </div>
                         <div class="padding-tb-8px">
@@ -140,7 +140,7 @@
                     <div class="quests-modal-step-info width-full display-flex flex-column justify-end">
                         <h1 class="text-center mb-92">{{ descriptionEvent }}</h1>
 
-                        <button class="main-custom-btn" @click="setEventDone">
+                        <button class="main-custom-btn" @click="handleButtonClick">
                             <span>
                                 <n-icon :component="CheckmarkSharp" :depth="1" :size="16" color="currentColor" />
                             </span>
@@ -154,10 +154,18 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { Checkmark, CheckmarkSharp, FileTrayFull, LockClosed, Star } from '@vicons/ionicons5'
 import type { IEventCard, IQuestCard } from '@/types'
+import { useAccount, useWriteContract } from '@wagmi/vue'
+import { useMessage } from 'naive-ui'
+import abi from '@/contracts/abi.json'
+import type { ContractFunctionArgs } from 'viem'
 
+const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
+
+const message = useMessage()
+const { isConnected, address, chainId } = useAccount()
 const props = defineProps<{
     card: IQuestCard
 }>()
@@ -170,6 +178,22 @@ const activeEventIndex = ref(0)
 const activeEvent = computed(() => props.card.events[activeEventIndex.value])
 const claimRewardsStep = ref(false)
 const descriptionEvent = ref<string>('')
+
+const functionName = ref('createRS')
+const args = ref<ContractFunctionArgs>([])
+
+const { data, error, isPending, isSuccess, isError, writeContract } = useWriteContract()
+
+const actionContract = () => {
+    writeContract({
+        abi,
+        chainId: chainId.value,
+        address: contractAddress1,
+        account: address.value,
+        functionName: functionName.value,
+        ...(args.value && args.value.length ? { args: args.value } : {})
+    })
+}
 
 const setEventDescription = (event: IEventCard) => {
     descriptionEvent.value = event.description
@@ -199,6 +223,65 @@ const showModal = ref(false)
 onMounted(() => {
     setEventDescription(props.card.events[0])
 })
+
+// Определение типов
+type ResponseType = `0x${string}`
+type WriteContractErrorType = {
+    message: string
+    code?: number
+    [key: string]: any
+}
+
+// Пример функции для получения данных
+const fetchData = async () => {
+    isPending.value = true
+    try {
+        // Имитация запроса
+        const response = await new Promise<ResponseType>((resolve, reject) => {
+            setTimeout(() => {
+                if (Math.random() > 0.5) {
+                    resolve('0x1234567890abcdef')
+                } else {
+                    reject({ message: 'Something went wrong', code: 500 })
+                }
+            }, 2000)
+        })
+        data.value = response
+        isSuccess.value = true
+    } catch (err) {
+        error.value = err as WriteContractErrorType
+        isError.value = true
+    } finally {
+        isPending.value = false
+    }
+}
+
+// Вызов fetchData при монтировании компонента
+fetchData()
+
+// Наблюдатели для вызова соответствующих сообщений
+watch(isPending, newVal => {
+    if (newVal) {
+        message.loading('Fetching...')
+    }
+})
+
+watch(isError, newVal => {
+    if (newVal) {
+        message.error(`Error: ${error.value?.message}`)
+    }
+})
+
+watch(isSuccess, newVal => {
+    if (newVal) {
+        message.success(`Success: ${data.value}`)
+    }
+})
+
+const handleButtonClick = () => {
+    setEventDone()
+    actionContract()
+}
 </script>
 
 <style lang="scss">

@@ -150,12 +150,6 @@
                         <button class="main-custom-btn width-full" type="button" @click="actionContract">
                             <span>Create party</span>
                         </button>
-
-                        <div>
-                            <p v-if="isPending">Fetching...</p>
-                            <p v-if="isError">Error: {{ error?.message }}</p>
-                            <p v-if="isSuccess">Success: {{ data }}</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -203,12 +197,14 @@ import { useMessage } from 'naive-ui'
 import type { ICreatePartyForm, IPartyMembers } from '@/types'
 import type { ContractFunctionArgs } from 'viem'
 import abi from '@/contracts/abi.json'
+
 const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
 
 const message = useMessage()
 const { isConnected, address, chainId } = useAccount()
 const showModal = ref(false)
 const editIndex = ref<number>(-1)
+
 function useRandomKey() {
     return Math.random().toString(36).substring(7)
 }
@@ -312,6 +308,60 @@ watch(
         if (!newOppo) resetPartyMember()
     }
 )
+
+// Определение типов
+type ResponseType = `0x${string}`
+type WriteContractErrorType = {
+    message: string
+    code?: number
+    [key: string]: any
+}
+
+// Пример функции для получения данных
+const fetchData = async () => {
+    isPending.value = true
+    try {
+        // Имитация запроса
+        const response = await new Promise<ResponseType>((resolve, reject) => {
+            setTimeout(() => {
+                if (Math.random() > 0.5) {
+                    resolve('0x1234567890abcdef')
+                } else {
+                    reject({ message: 'Something went wrong', code: 500 })
+                }
+            }, 2000)
+        })
+        data.value = response
+        isSuccess.value = true
+    } catch (err) {
+        error.value = err as WriteContractErrorType
+        isError.value = true
+    } finally {
+        isPending.value = false
+    }
+}
+
+// Вызов fetchData при монтировании компонента
+fetchData()
+
+// Наблюдатели для вызова соответствующих сообщений
+watch(isPending, newVal => {
+    if (newVal) {
+        message.loading('Fetching...')
+    }
+})
+
+watch(isError, newVal => {
+    if (newVal) {
+        message.error(`Error: ${error.value?.message}`)
+    }
+})
+
+watch(isSuccess, newVal => {
+    if (newVal) {
+        message.success(`Success: ${data.value}`)
+    }
+})
 </script>
 <style>
 .max-w-648 {

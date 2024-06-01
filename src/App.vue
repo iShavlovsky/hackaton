@@ -17,7 +17,6 @@ import { type GlobalThemeOverrides, NThemeEditor } from 'naive-ui'
 import { useTitle } from '@vueuse/core'
 import NavBar from '@/components/NavBar.vue'
 import FooterComponent from '@/components/FooterComponent.vue'
-import useContract from '@/composables/useContract.ts'
 
 useTitle('Rev Share Party')
 const darkThemeOverrides: GlobalThemeOverrides = {
@@ -75,6 +74,7 @@ const darkThemeOverrides: GlobalThemeOverrides = {
         color: '#151518',
         colorInfo: '#3D3D41',
         colorSuccess: '#3D3D41',
+        colorLoading: '#3D3D41',
         iconColorSuccess: '#92FE75',
         colorError: '#3D3D41',
         colorWarning: '#3D3D41',

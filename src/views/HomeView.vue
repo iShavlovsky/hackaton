@@ -2,7 +2,7 @@
     <section>
         <div class="container main-container-padding">
             <div class="home-hero-w display-flex flex-row gap-40 align-items-center p-tb-24px">
-                <n-avatar :size="120" round src="/images/avatar-main.jpg" />
+                <n-avatar :size="120" round src="./images/avatar-main.jpg" />
 
                 <div class="display-flex flex-column gap-8">
                     <div class="display-flex flex-row gap-8 align-items-center">
@@ -155,15 +155,15 @@ const actionContract = () => {
 const questCards: IQuestCard[] = reactive([
     {
         id: 2,
-        imageSrc: '/images/apebol.jpg',
+        imageSrc: './images/apebol.jpg',
         title: 'Buying Bonds on Linea with ApeBond',
         description: "Celebrate ApeBond's recent launch on the Linea Mainnet",
         tags: ['NFT marketplace'],
         totalUsers: '4k',
         reward: '15 TBA',
-        user1: '/images/user1.jpg',
-        user2: '/images/user2.jpg',
-        user3: '/images/user3.jpg',
+        user1: './images/user1.jpg',
+        user2: './images/user2.jpg',
+        user3: './images/user3.jpg',
         questSteps: 4,
         events: [
             {
@@ -194,15 +194,15 @@ const questCards: IQuestCard[] = reactive([
     },
     {
         id: 4,
-        imageSrc: '/images/linea.jpg',
+        imageSrc: './images/linea.jpg',
         title: 'Swapping on Linea',
         description: 'Explore the Linea ecosystem and its top DEXes.\n',
         tags: ['DeFi'],
         totalUsers: '435',
         reward: '15 TBA',
-        user1: '/images/user4.jpg',
-        user2: '/images/user5.jpg',
-        user3: '/images/user5-1.jpg',
+        user1: './images/user4.jpg',
+        user2: './images/user5.jpg',
+        user3: './images/user5-1.jpg',
         questSteps: 5,
         events: [
             {
@@ -256,13 +256,13 @@ const rows: TableRowData[] = [
     {
         index: 1,
         party: {
-            avatar: '/images/party1.jpg',
+            avatar: './images/party1.jpg',
             name: 'Glitch & Glam',
             description:
                 "It's time for a game party focused on Linea token quests! Join forces with other gamers, tackle challenges, and earn tokens together. Let's m"
         },
         owner: {
-            avatar: '/images/user7.jpg',
+            avatar: './images/user7.jpg',
             name: '@meuw',
             owner: false
         },
@@ -275,13 +275,13 @@ const rows: TableRowData[] = [
     {
         index: 2,
         party: {
-            avatar: '/images/party2.jpg',
+            avatar: './images/party2.jpg',
             name: 'Glitch & Glam',
             description:
                 "Join us for a game party where gamers unite to complete quests and earn Linea tokens. Team up, strategize, and conquer challenges together. Let's embark on this adventure and collect those tokens!"
         },
         owner: {
-            avatar: '/images/avatar-main.jpg',
+            avatar: './images/avatar-main.jpg',
             name: '@malamuth (you)',
             owner: true
         },
