@@ -13,7 +13,7 @@
                 </span>
             </RouterLink>
             <div>
-                <div class="display-flex flex-row align-items-center gap-16">
+                <div class="nav-bar-wallet-btn-w display-flex flex-row align-items-center gap-16">
                     <n-button v-if="isConnected" :loading="isConnectPending" @click="disconnect()">
                         <template #icon>
                             <n-icon :component="Unlink" :depth="1" color="#92FE75" />
@@ -115,6 +115,13 @@ const handleSelect = (key: string) => {
 .n-spin-content {
     span {
         color: #92fe75 !important;
+    }
+}
+
+.nav-bar-wallet-btn-w {
+    @media (max-width: 500px) {
+        flex-direction: column;
+        align-items: start;
     }
 }
 </style>
