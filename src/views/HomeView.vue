@@ -7,7 +7,7 @@
                 <div class="display-flex flex-column gap-8">
                     <div class="display-flex flex-row gap-8 align-items-center">
                         <h1>malamuth</h1>
-                        <button class="tech-btn">
+                        <button class="tech-btn" @click="partyStore.clearLocalStorage">
                             <span><n-icon :component="SettingsSharp" :depth="1" :size="24" color="#fff" /></span>
                         </button>
                     </div>
@@ -34,7 +34,7 @@
                     size="large"
                     type="line"
                 >
-                    <n-tab-pane :tab="`Parties ${rows.length}`" name="parties">
+                    <n-tab-pane :tab="`Parties ${parlyLength}`" name="parties">
                         <n-space class="table-w" vertical>
                             <n-table class="table-holder" striped>
                                 <thead>
@@ -58,7 +58,7 @@
                                 </thead>
                                 <tbody>
                                     <PartiesTableElement
-                                        v-for="(row, index) in rows"
+                                        v-for="(row, index) in partyStore.party"
                                         :key="index"
                                         :index="index + 1"
                                         :owner="row.owner"
@@ -82,15 +82,15 @@
                         </RouterLink>
                     </n-tab-pane>
 
-                    <n-tab-pane :tab="`Quests ${questCards.length}`" name="quests">
+                    <n-tab-pane :tab="`Quests ${questLength}`" name="quests">
                         <div class="quest-cards-list-w display-flex gap-8">
                             <KeepAlive>
                                 <QuestCard
-                                    v-for="card in questCards"
+                                    v-for="card in questsStore.questCards"
                                     :key="card.id"
                                     :card="card"
                                     :lastParty="lastPartyId"
-                                    @set-event="handleSetEvent"
+                                    @set-event="questsStore.handleSetEvent"
                                 ></QuestCard>
                             </KeepAlive>
                         </div>
@@ -103,18 +103,17 @@
 <script lang="ts" setup>
 import { Add, CopyOutline, SettingsSharp } from '@vicons/ionicons5'
 import PartiesTableElement from '@/components/PartiesTableElement.vue'
-import type { TableRowData } from '@/components/tableElement.type.ts'
-import type { IEventCard, IQuestCard } from '@/types'
-import { useMainStore } from '@/stores'
+import { useMainStore, usePartyStore, useQuestsStore } from '@/stores'
 import { useAccount, useReadContract } from '@wagmi/vue'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
 import { RouterLink } from 'vue-router'
-import { reactive, ref } from 'vue'
 import abi from '@/contracts/abi.json'
 
 const store = useMainStore()
+const partyStore = usePartyStore()
+const questsStore = useQuestsStore()
 
 const { isConnected, address, chainId } = useAccount()
 const message = useMessage()
@@ -149,146 +148,8 @@ onMounted(() => {
     getLastPartyId()
 })
 
-const questCards: IQuestCard[] = reactive([
-    {
-        id: 2,
-        imageSrc: './images/apebol.jpg',
-        title: 'Buying Bonds on Linea with ApeBond',
-        description: "Celebrate ApeBond's recent launch on the Linea Mainnet",
-        tags: ['NFT marketplace'],
-        totalUsers: '4k',
-        reward: '15 TBA',
-        user1: './images/user1.jpg',
-        user2: './images/user2.jpg',
-        user3: './images/user3.jpg',
-        questSteps: 4,
-        events: [
-            {
-                title: 'Intro to Ape Bond Value',
-                description:
-                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
-                status: false
-            },
-            {
-                title: 'Read Announcement',
-                description:
-                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
-                status: false
-            },
-            {
-                title: 'Join ApeBond on TG',
-                description:
-                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
-                status: false
-            },
-            {
-                title: 'Purchase a Bond via ApeBond',
-                description:
-                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
-                status: false
-            }
-        ]
-    },
-    {
-        id: 4,
-        imageSrc: './images/linea.jpg',
-        title: 'Swapping on Linea',
-        description: 'Explore the Linea ecosystem and its top DEXes.\n',
-        tags: ['DeFi'],
-        totalUsers: '435',
-        reward: '15 TBA',
-        user1: './images/user4.jpg',
-        user2: './images/user5.jpg',
-        user3: './images/user5-1.jpg',
-        questSteps: 5,
-        events: [
-            {
-                title: 'Intro to Ape Bond Value',
-                description:
-                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
-                status: true
-            },
-            {
-                title: 'Read Announcement',
-                description:
-                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
-                status: false
-            },
-            {
-                title: 'Join ApeBond on Discord',
-                description:
-                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
-                status: false
-            },
-            {
-                title: 'Join ApeBond on TG',
-                description:
-                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
-                status: false
-            },
-            {
-                title: 'Purchase a Bond via ApeBond',
-                description:
-                    'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
-                status: false
-            }
-        ]
-    }
-])
-
-const handleSetEvent = ({ cardId, eventTitle }: { cardId: IQuestCard['id']; eventTitle: IEventCard['title'] }) => {
-    const card = questCards.find(card => {
-        return card.id === cardId
-    })
-
-    if (card) {
-        const event = card.events.find(event => event.title === eventTitle)
-        if (event) {
-            event.status = true
-        }
-    }
-}
-
-const rows: TableRowData[] = [
-    {
-        index: 1,
-        party: {
-            avatar: './images/party1.jpg',
-            name: 'Glitch & Glam',
-            description:
-                "It's time for a game party focused on Linea token quests! Join forces with other gamers, tackle challenges, and earn tokens together. Let's m"
-        },
-        owner: {
-            avatar: './images/user7.jpg',
-            name: '@meuw',
-            owner: false
-        },
-        people: 28,
-        yourTokens: 3069,
-        yourTokensPercentage: -4,
-        totalDistributed: 15069,
-        totalDistributedPercentage: 34
-    },
-    {
-        index: 2,
-        party: {
-            avatar: './images/party2.jpg',
-            name: 'Glitch & Glam',
-            description:
-                "Join us for a game party where gamers unite to complete quests and earn Linea tokens. Team up, strategize, and conquer challenges together. Let's embark on this adventure and collect those tokens!"
-        },
-        owner: {
-            avatar: './images/avatar-main.jpg',
-            name: '@malamuth (you)',
-            owner: true
-        },
-        people: 46,
-        yourTokens: 738,
-        yourTokensPercentage: 20,
-        totalDistributed: 2069,
-        totalDistributedPercentage: 7
-    }
-]
+const parlyLength = computed(() => partyStore.party.length)
+const questLength = computed(() => questsStore.questCards.length)
 </script>
 <style lang="scss">
 .card-tabs .n-tabs-nav--bar-type {

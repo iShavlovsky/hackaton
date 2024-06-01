@@ -33,3 +33,35 @@ export interface ICreatePartyForm {
     share: number | null
     partyMembers: IPartyMembers[]
 }
+
+export interface Party {
+    avatar: string
+    name: string
+    description: string
+}
+
+export interface Owner {
+    avatar: string
+    name: string
+    owner: boolean
+}
+
+export interface PartyMember {
+    id: string | number
+    name: string
+    description: string
+    revenue: number | null
+}
+
+export interface PartyData {
+    index: number
+    party: Party
+    owner: Owner
+    share: number | null
+    partyMembers: PartyMember[]
+    people: number
+    yourTokens: number
+    yourTokensPercentage: number
+    totalDistributed: number
+    totalDistributedPercentage: number
+}

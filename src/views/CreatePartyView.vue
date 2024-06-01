@@ -192,7 +192,7 @@
                 </div>
             </n-modal>
 
-            <n-modal v-model:show="showModal1" class="quest-custom-modal min-w-648" preset="dialog" title="Dialog">
+            <n-modal v-model:show="isSuccess" class="quest-custom-modal min-w-648" preset="dialog" title="Dialog">
                 <template #header>
                     <div></div>
                 </template>
@@ -227,13 +227,13 @@ import type { ICreatePartyForm, IPartyMembers } from '@/types'
 import type { ContractFunctionArgs } from 'viem'
 import abi from '@/contracts/abi.json'
 import { useClipboard } from '@vueuse/core'
-
+import { usePartyStore } from '@/stores'
+const partyStore = usePartyStore()
 const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
 
 const message = useMessage()
 const { isConnected, address, chainId } = useAccount()
 const showModal = ref(false)
-const showModal1 = ref(true)
 const editIndex = ref<number>(-1)
 
 function useRandomKey() {
@@ -246,6 +246,7 @@ const args = ref<ContractFunctionArgs>([])
 const { data, error, isPending, isSuccess, isError, writeContract } = useWriteContract()
 const actionContract = () => {
     if (validatePartyForm.value) {
+        // createParty()
         writeContract({
             abi,
             chainId: chainId.value,
@@ -395,17 +396,58 @@ const copyHandler = (textCopy: string) => {
         })
     }
 }
+
 watch(
     () => showModal.value,
     newOppo => {
         if (!newOppo) resetPartyMember()
     }
 )
+function getRandomInt(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
+function generateRandomData() {
+    const people = getRandomInt(1, 100)
+    const yourTokens = getRandomInt(1000, 5000)
+    const yourTokensPercentage = getRandomInt(-10, 10)
+    const totalDistributed = getRandomInt(1000, 2000)
+    const totalDistributedPercentage = getRandomInt(0, 50)
+
+    return {
+        people,
+        yourTokens,
+        yourTokensPercentage,
+        totalDistributed,
+        totalDistributedPercentage
+    }
+}
+const imagesOwner = ['./images/user7.jpg', './images/avatar-main.jpg']
+const imagesParty = ['./images/party2.jpg', './images/party1.jpg']
+
+const createParty = () => {
+    partyStore.party.push({
+        index: lastPartyId.value as number,
+        party: {
+            avatar: imagesParty[getRandomInt(0, imagesParty.length - 1)],
+            name: createPartyForm.name,
+            description: createPartyForm.description
+        },
+        owner: {
+            avatar: imagesOwner[getRandomInt(0, imagesOwner.length - 1)],
+            name: '@meuw',
+            owner: true
+        },
+        share: createPartyForm.share,
+        partyMembers: createPartyForm.partyMembers,
+        ...generateRandomData()
+    })
+}
 watch(
     () => isSuccess.value,
     () => {
         message.success(`Done ${data.value}`)
         getLastPartyId()
+        createParty()
     }
 )
 watch(

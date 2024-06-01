@@ -14,7 +14,7 @@
 </template>
 <script lang="ts" setup>
 import { type GlobalThemeOverrides, NThemeEditor } from 'naive-ui'
-import { useTitle } from '@vueuse/core'
+import { useStorage, useTitle } from '@vueuse/core'
 import NavBar from '@/components/NavBar.vue'
 import FooterComponent from '@/components/FooterComponent.vue'
 

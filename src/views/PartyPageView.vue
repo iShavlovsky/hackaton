@@ -3,7 +3,7 @@
         <div class="container main-container-padding">
             <div class="party-page-header-w display-flex justify-between p-tb-24px">
                 <div class="party-page-title-w max-w-840 display-flex gap-40">
-                    <n-avatar :size="120" bordered class="min-w-120px" src="/images/QuantumQuestParty.jpg" />
+                    <n-avatar :size="120" bordered class="min-w-120px" src="./images/QuantumQuestParty.jpg" />
                     <div class="display-grid gap-8">
                         <h1>Quantum Quest</h1>
                         <p class="op-06">
