@@ -104,14 +104,14 @@
                                     </span>
                                     <span class="step-title">{{ event.title }}</span>
                                 </span>
-                                <div class="ico-w-28">
+                                <span class="ico-w-28">
                                     <span v-if="activeEventIndex != i && !event.status" class="step-lock">
                                         <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
                                     </span>
                                     <span v-if="event.status && activeEventIndex" class="step-check">
                                         <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
                                     </span>
-                                </div>
+                                </span>
                             </button>
 
                             <button
@@ -126,14 +126,14 @@
                                     </span>
                                     <span class="step-title text-color-brand-aviation">Claim rewards</span>
                                 </span>
-                                <div class="ico-w-28">
+                                <span class="ico-w-28">
                                     <span v-if="!claimRewardsStep" class="step-lock">
                                         <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
                                     </span>
                                     <span v-if="claimRewardsStep" class="step-check">
                                         <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
                                     </span>
-                                </div>
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                             <span>
                                 <n-icon :component="CheckmarkSharp" :depth="1" :size="16" color="currentColor" />
                             </span>
-                            <span>Done</span>
+                            <span>{{ claimRewardsStep ? 'CLAIM!!!!' : 'Done' }}</span>
                         </button>
                     </div>
                 </div>
@@ -165,7 +165,7 @@ import type { ContractFunctionArgs } from 'viem'
 const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
 
 const message = useMessage()
-const { isConnected, address, chainId } = useAccount()
+const { address, chainId } = useAccount()
 const props = defineProps<{
     card: IQuestCard
 }>()
@@ -179,7 +179,7 @@ const activeEvent = computed(() => props.card.events[activeEventIndex.value])
 const claimRewardsStep = ref(false)
 const descriptionEvent = ref<string>('')
 
-const functionName = ref('createRS')
+const functionName = ref('claim')
 const args = ref<ContractFunctionArgs>([])
 
 const { data, error, isPending, isSuccess, isError, writeContract } = useWriteContract()
@@ -200,6 +200,9 @@ const setEventDescription = (event: IEventCard) => {
 }
 
 const setEventDone = () => {
+    if (claimRewardsStep.value) {
+        actionContract()
+    }
     if (activeEvent.value) {
         emit('setEvent', { cardId: props.card.id, eventTitle: activeEvent.value.title })
         activeEvent.value.status = true
@@ -208,14 +211,10 @@ const setEventDone = () => {
             activeEventIndex.value++
             setEventDescription(props.card.events[activeEventIndex.value])
         } else {
-            claimRewards()
+            args.value = [1, 'sd', 'sd']
+            claimRewardsStep.value = true
         }
     }
-}
-
-const claimRewards = () => {
-    claimRewardsStep.value = true
-    console.log('claimRewards', claimRewardsStep.value)
 }
 
 const showModal = ref(false)
@@ -224,59 +223,23 @@ onMounted(() => {
     setEventDescription(props.card.events[0])
 })
 
-// Определение типов
-type ResponseType = `0x${string}`
-type WriteContractErrorType = {
-    message: string
-    code?: number
-    [key: string]: any
-}
-
-// Пример функции для получения данных
-const fetchData = async () => {
-    isPending.value = true
-    try {
-        // Имитация запроса
-        const response = await new Promise<ResponseType>((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > 0.5) {
-                    resolve('0x1234567890abcdef')
-                } else {
-                    reject({ message: 'Something went wrong', code: 500 })
-                }
-            }, 2000)
-        })
-        data.value = response
-        isSuccess.value = true
-    } catch (err) {
-        error.value = err as WriteContractErrorType
-        isError.value = true
-    } finally {
-        isPending.value = false
-    }
-}
-
-// Вызов fetchData при монтировании компонента
-fetchData()
-
-// Наблюдатели для вызова соответствующих сообщений
-watch(isPending, newVal => {
-    if (newVal) {
-        message.loading('Fetching...')
-    }
-})
-
-watch(isError, newVal => {
-    if (newVal) {
-        message.error(`Error: ${error.value?.message}`)
-    }
-})
-
-watch(isSuccess, newVal => {
-    if (newVal) {
-        message.success(`Success: ${data.value}`)
-    }
-})
+// watch(isPending, newVal => {
+//     if (newVal) {
+//         message.loading('Fetching...')
+//     }
+// })
+//
+// watch(isError, newVal => {
+//     if (newVal) {
+//         message.error(`Error: ${error.value?.message}`)
+//     }
+// })
+//
+// watch(isSuccess, newVal => {
+//     if (newVal) {
+//         message.success(`Success: ${data.value}`)
+//     }
+// })
 
 const handleButtonClick = () => {
     setEventDone()

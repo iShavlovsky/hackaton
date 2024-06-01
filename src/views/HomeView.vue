@@ -119,7 +119,6 @@ import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
 import { RouterLink } from 'vue-router'
 import { reactive, ref } from 'vue'
-// import useContract from '@/composables/useContract'
 import abi from '@/contracts/abi.json'
 import type { ContractFunctionArgs } from 'viem'
 
