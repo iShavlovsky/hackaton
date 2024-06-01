@@ -199,7 +199,7 @@
 import { RouterLink } from 'vue-router'
 import { Add, ChevronBackOutline, Pencil, TrashBin, Wallet } from '@vicons/ionicons5'
 import { computed, reactive, ref, watch } from 'vue'
-import { useAccount, useWriteContract } from '@wagmi/vue'
+import { useAccount, useReadContract, useWriteContract } from '@wagmi/vue'
 import { useMessage } from 'naive-ui'
 import type { ICreatePartyForm, IPartyMembers } from '@/types'
 import type { ContractFunctionArgs } from 'viem'
@@ -234,6 +234,56 @@ const actionContract = () => {
         message.warning('Fill in all the fields')
     }
 }
+const { data: lastPartyId, refetch } = useReadContract({
+    abi,
+    chainId: chainId.value,
+    address: contractAddress1,
+    account: address.value,
+    functionName: 'lastPartyId',
+    query: {
+        enabled: true
+    }
+})
+
+const getLastPartyId = async () => {
+    await refetch()
+    message.info(`last Party Id: ${lastPartyId.value}`)
+    console.log('last Party Id:', lastPartyId.value)
+}
+
+const createRS = async () => {
+    functionName.value = 'createRS'
+    args.value = []
+    actionContract()
+}
+
+const createTask = async (party_id: number, temp: number) => {
+    functionName.value = 'createTask'
+    args.value = [party_id, { temp }]
+    actionContract()
+}
+
+const claimTask = async (party_id: number, task_id: string) => {
+    functionName.value = 'claim'
+    // args.value = [party_id, task_id, secret]
+    actionContract()
+}
+
+const burnTokens = async (id: number, value: number) => {
+    functionName.value = 'burn'
+    args.value = [id, value]
+    actionContract()
+}
+
+const burnBatchTokens = async (ids: number[], values: number[]) => {
+    functionName.value = 'burnBatch'
+    args.value = [ids, values]
+    actionContract()
+}
+
+onMounted(() => {
+    getLastPartyId()
+})
 
 const createPartyForm = reactive<Omit<ICreatePartyForm, 'owner'>>({
     name: '',
@@ -317,6 +367,19 @@ watch(
     () => showModal.value,
     newOppo => {
         if (!newOppo) resetPartyMember()
+    }
+)
+watch(
+    () => isSuccess.value,
+    () => {
+        message.success(`Done ${data.value}`)
+        getLastPartyId()
+    }
+)
+watch(
+    () => isError.value,
+    () => {
+        message.error(`Error ${error.value?.message}`)
     }
 )
 </script>
