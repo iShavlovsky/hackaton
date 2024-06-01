@@ -1,12 +1,9 @@
 <template>
     <footer class="footer-w display-flex align-items-center">
-        <div class="container display-flex flex-row justify-between align-items-center">
+        <div class="container display-grid grid-cols-3 align-items-center">
             <p>© revshareparty</p>
-            <nav class="footer-nav">
-                <ul class="display-flex flex-row gap-40">
-                    <li>
-                        <RouterLink to="/party-page">party-page</RouterLink>
-                    </li>
+            <nav class="footer-nav-w justify-center">
+                <ul class="footer-nav-holder display-flex flex-row gap-40 width-full justify-center">
                     <li>
                         <a>Newsletter</a>
                     </li>
@@ -19,12 +16,9 @@
                     <li>
                         <a>Privacy</a>
                     </li>
-                    <li>
-                        <RouterLink to="/create-party">create-party</RouterLink>
-                    </li>
                 </ul>
             </nav>
-            <ul class="display-flex flex-row gap-4">
+            <ul class="display-flex flex-row gap-4 justify-end">
                 <li>
                     <a class="social-footer pointer" title="Join our community in X">
                         <img alt="X" src="/images/LogoX.svg" />
@@ -49,17 +43,29 @@
         </div>
     </footer>
 </template>
-<script lang="ts" setup>
-import { RouterLink } from 'vue-router'
-</script>
-<style lang="scss" scoped>
+<script lang="ts" setup></script>
+<style lang="scss">
 .footer-w {
     height: 133px;
     width: 100%;
     padding: 50px 0;
+    @media (max-width: 880px) {
+        height: auto;
+    }
 
     .container {
         width: 100%;
+        @media (max-width: 880px) {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+    }
+}
+
+.footer-nav-holder {
+    @media (max-width: 500px) {
+        gap: 20px;
     }
 }
 
