@@ -1,3 +1,3 @@
-import{i as u}from"./@vue-CA14Bhfh.js";const i="@css-render/vue3-ssr";function o(e,n){return`<style cssr-id="${e}">
+import{i as u}from"./@vue-CyX75HH2.js";const i="@css-render/vue3-ssr";function o(e,n){return`<style cssr-id="${e}">
 ${n}
 </style>`}function c(e,n,t){const{styles:r,ids:s}=t;s.has(e)||r!==null&&(s.add(e),r.push(o(e,n)))}const d=typeof document<"u";function l(){if(d)return;const e=u(i,null);if(e!==null)return{adapter:(n,t)=>c(n,t,e),context:e}}export{l as u};
