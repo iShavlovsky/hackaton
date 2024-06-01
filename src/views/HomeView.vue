@@ -113,14 +113,7 @@ import PartiesTableElement from '@/components/PartiesTableElement.vue'
 import type { TableRowData } from '@/components/tableElement.type.ts'
 import type { IEventCard, IQuestCard } from '@/types'
 import { useMainStore } from '@/stores'
-import {
-    useAccount,
-    useAccountEffect,
-    useConfig,
-    useConnectorClient,
-    useSimulateContract,
-    useWriteContract
-} from '@wagmi/vue'
+import { useAccount, useWriteContract } from '@wagmi/vue'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
@@ -148,7 +141,7 @@ const functionName = ref('createRS')
 const args = ref<ContractFunctionArgs>([])
 const { data, error, isPending, isSuccess, isError, writeContract } = useWriteContract()
 
-const refetchContract = () => {
+const actionContract = () => {
     writeContract({
         abi,
         chainId: chainId.value,

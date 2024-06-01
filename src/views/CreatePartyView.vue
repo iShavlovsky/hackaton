@@ -147,9 +147,15 @@
                         </div>
                     </div>
                     <div class="mt-80 width-full">
-                        <button class="main-custom-btn width-full" type="button">
+                        <button class="main-custom-btn width-full" type="button" @click="actionContract">
                             <span>Create party</span>
                         </button>
+
+                        <div>
+                            <p v-if="isPending">Fetching...</p>
+                            <p v-if="isError">Error: {{ error?.message }}</p>
+                            <p v-if="isSuccess">Success: {{ data }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -192,16 +198,34 @@
 import { RouterLink } from 'vue-router'
 import { Add, ChevronBackOutline, Pencil, TrashBin, Wallet } from '@vicons/ionicons5'
 import { computed, reactive, ref, watch } from 'vue'
-import { useAccount } from '@wagmi/vue'
+import { useAccount, useWriteContract } from '@wagmi/vue'
 import { useMessage } from 'naive-ui'
 import type { ICreatePartyForm, IPartyMembers } from '@/types'
+import type { ContractFunctionArgs } from 'viem'
+import abi from '@/contracts/abi.json'
+const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
 
 const message = useMessage()
-const { isConnected, address } = useAccount()
+const { isConnected, address, chainId } = useAccount()
 const showModal = ref(false)
 const editIndex = ref<number>(-1)
 function useRandomKey() {
     return Math.random().toString(36).substring(7)
+}
+
+const functionName = ref('createRS')
+const args = ref<ContractFunctionArgs>([])
+
+const { data, error, isPending, isSuccess, isError, writeContract } = useWriteContract()
+const actionContract = () => {
+    writeContract({
+        abi,
+        chainId: chainId.value,
+        address: contractAddress1,
+        account: address.value,
+        functionName: functionName.value,
+        ...(args.value && args.value.length ? { args: args.value } : {})
+    })
 }
 
 const createPartyForm = reactive<Omit<ICreatePartyForm, 'owner'>>({
