@@ -110,7 +110,10 @@ import { Link, ShareSocialSharp } from '@vicons/ionicons5'
 import ComradeTableElement from '@/components/ComradeTableElement.vue'
 import type { ComradeTableElementProps } from '@/components/СomradeTableElementProps.type.ts'
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 
+const partySlug = computed(() => route.params.slug as string)
 const showModal = ref(false)
 const rows: ComradeTableElementProps[] = [
     {

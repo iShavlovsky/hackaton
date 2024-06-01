@@ -21,20 +21,20 @@ export default defineConfig(({ mode }) => {
                 output: {
                     manualChunks(id) {
                         if (id.includes('node_modules')) {
-                            const libraries = [
-                                'axios',
-                                'pinia',
-                                'vue-router'
-                                // '@wagmi/vue',
-                                // '@vueuse/core',
-                                // '@tanstack/vue-query'
-                            ]
-                            const pattern = new RegExp('/node_modules/(' + libraries.join('|') + ')/')
-
-                            const match = id.match(pattern)
-                            if (match) {
-                                return match[1].replace('@', '')
-                            }
+                            // const libraries = [
+                            //     'axios',
+                            //     'pinia',
+                            //     'vue-router'
+                            //     // '@wagmi/vue',
+                            //     // '@vueuse/core',
+                            //     // '@tanstack/vue-query'
+                            // ]
+                            // const pattern = new RegExp('/node_modules/(' + libraries.join('|') + ')/')
+                            //
+                            // const match = id.match(pattern)
+                            // if (match) {
+                            //     return match[1].replace('@', '')
+                            // }
                             return id.toString().split('node_modules/')[1].split('/')[0].toString()
                         }
                     }
