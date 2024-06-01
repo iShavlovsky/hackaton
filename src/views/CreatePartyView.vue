@@ -191,25 +191,49 @@
                     </div>
                 </div>
             </n-modal>
+
+            <n-modal v-model:show="showModal1" class="quest-custom-modal min-w-648" preset="dialog" title="Dialog">
+                <template #header>
+                    <div></div>
+                </template>
+                <div class="quests-card-modal-content p-tb-24px mt-40">
+                    <h1 class="text-center">Done!!</h1>
+                    <div class="display-grid gap-8 mt-40">
+                        <div class="display-flex flex-row gap-8 align-items-center op-06">
+                            <p>
+                                {{ data }}
+                            </p>
+                            <button v-if="isSupported && data" class="tech-btn" @click="copyHandler(data)">
+                                <span><n-icon :component="CopyOutline" :depth="1" :size="24" color="#fff" /></span>
+                            </button>
+                        </div>
+                        <RouterLink class="main-custom-btn width-full" to="/" type="button" @click="addPartyMember">
+                            <span>Come back home</span>
+                        </RouterLink>
+                    </div>
+                </div>
+            </n-modal>
         </section>
     </n-spin>
 </template>
 
 <script lang="ts" setup>
 import { RouterLink } from 'vue-router'
-import { Add, ChevronBackOutline, Pencil, TrashBin, Wallet } from '@vicons/ionicons5'
+import { Add, ChevronBackOutline, CopyOutline, Pencil, TrashBin, Wallet } from '@vicons/ionicons5'
 import { computed, reactive, ref, watch } from 'vue'
 import { useAccount, useReadContract, useWriteContract } from '@wagmi/vue'
 import { useMessage } from 'naive-ui'
 import type { ICreatePartyForm, IPartyMembers } from '@/types'
 import type { ContractFunctionArgs } from 'viem'
 import abi from '@/contracts/abi.json'
+import { useClipboard } from '@vueuse/core'
 
 const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
 
 const message = useMessage()
 const { isConnected, address, chainId } = useAccount()
 const showModal = ref(false)
+const showModal1 = ref(true)
 const editIndex = ref<number>(-1)
 
 function useRandomKey() {
@@ -265,7 +289,7 @@ const createTask = async (party_id: number, temp: number) => {
 
 const claimTask = async (party_id: number, task_id: string) => {
     functionName.value = 'claim'
-    // args.value = [party_id, task_id, secret]
+    args.value = [party_id, task_id, 'secret']
     actionContract()
 }
 
@@ -362,7 +386,15 @@ const deletePartyMemberById = (id: IPartyMembers['id']) => {
         createPartyForm.partyMembers.splice(index, 1)
     }
 }
+const { text, copy, copied, isSupported } = useClipboard()
 
+const copyHandler = (textCopy: string) => {
+    if (address.value) {
+        copy(textCopy).then(() => {
+            if (copied) message.success(text.value)
+        })
+    }
+}
 watch(
     () => showModal.value,
     newOppo => {

@@ -36,119 +36,126 @@
             <template #header>
                 <div></div>
             </template>
-            <div class="quests-card-modal-content">
-                <div class="quests-card-modal-head display-flex gap-40 align-items-center">
-                    <n-avatar :size="120" :src="props.card.imageSrc" bordered />
-                    <div class="quests-card__header display-flex flex-column gap-6">
-                        <h2>{{ props.card.title }}</h2>
-                        <p class="op-06">{{ props.card.description }}</p>
-                        <div class="display-flex gap-8">
-                            <p>
-                                <span>{{ props.card.totalUsers }}</span>
-                                users
-                            </p>
-                            <div class="">
-                                <n-avatar
-                                    :size="28"
-                                    :src="props.card.user1"
-                                    bordered
-                                    class="users-quest-avatar"
-                                    round
-                                />
-                                <n-avatar
-                                    :size="28"
-                                    :src="props.card.user2"
-                                    bordered
-                                    class="users-quest-avatar"
-                                    round
-                                />
-                                <n-avatar
-                                    :size="28"
-                                    :src="props.card.user3"
-                                    bordered
-                                    class="users-quest-avatar"
-                                    round
-                                />
+            <n-spin :show="isPending">
+                <div class="quests-card-modal-content">
+                    <div class="quests-card-modal-head display-flex gap-40 align-items-center">
+                        <n-avatar :size="120" :src="props.card.imageSrc" bordered />
+                        <div class="quests-card__header display-flex flex-column gap-6">
+                            <h2>{{ props.card.title }}</h2>
+                            <p class="op-06">{{ props.card.description }}</p>
+                            <div class="display-flex gap-8">
+                                <p>
+                                    <span>{{ props.card.totalUsers }}</span>
+                                    users
+                                </p>
+                                <div class="">
+                                    <n-avatar
+                                        :size="28"
+                                        :src="props.card.user1"
+                                        bordered
+                                        class="users-quest-avatar"
+                                        round
+                                    />
+                                    <n-avatar
+                                        :size="28"
+                                        :src="props.card.user2"
+                                        bordered
+                                        class="users-quest-avatar"
+                                        round
+                                    />
+                                    <n-avatar
+                                        :size="28"
+                                        :src="props.card.user3"
+                                        bordered
+                                        class="users-quest-avatar"
+                                        round
+                                    />
+                                </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="steps-all-w display-flex gap-20">
+                        <div class="steps-sidebar-w display-flex flex-column gap-8">
+                            <div class="reward-count-w display-flex flex-row justify-between">
+                                <div class="display-grid align-self-center">
+                                    <p>Reward</p>
+                                    <h2>{{ props.card.reward }}</h2>
+                                </div>
+                                <div class="">
+                                    <n-image alt="You are the King" class="reward-ico" src="./images/korona.png" />
+                                </div>
+                            </div>
+                            <div class="padding-tb-8px">
+                                <h3>Finish all steps</h3>
+                            </div>
+                            <div class="steps-btns-wrapper display-grid gap-8">
+                                <button
+                                    v-for="(event, i) in props.card.events"
+                                    :key="event.title"
+                                    :class="[
+                                        'quest-modal-step-btn display-flex flex-row align-items-center justify-between',
+                                        { 'active-step': activeEventIndex === i, 'done-step': event.status }
+                                    ]"
+                                    :disabled="!event.status"
+                                    @click="setEventDescription(event)"
+                                >
+                                    <span class="display-flex align-items-center gap-8">
+                                        <span class="step-ico display-flex align-items-center justify-center">
+                                            {{ i + 1 }}
+                                        </span>
+                                        <span class="step-title">{{ event.title }}</span>
+                                    </span>
+                                    <span class="ico-w-28">
+                                        <span v-if="activeEventIndex != i && !event.status" class="step-lock">
+                                            <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
+                                        </span>
+                                        <span v-if="event.status && activeEventIndex" class="step-check">
+                                            <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
+                                        </span>
+                                    </span>
+                                </button>
+
+                                <button
+                                    :class="[
+                                        'quest-modal-step-btn display-flex flex-row align-items-center justify-between',
+                                        { 'active-step': claimRewardsStep, 'done-step': claimRewardsStep }
+                                    ]"
+                                >
+                                    <span class="display-flex align-items-center gap-8">
+                                        <span class="step-ico display-flex align-items-center justify-center">
+                                            <n-icon :component="Star" :depth="1" :size="16" color="#8F75FE" />
+                                        </span>
+                                        <span class="step-title text-color-brand-aviation">Claim rewards</span>
+                                    </span>
+                                    <span class="ico-w-28">
+                                        <span v-if="!claimRewardsStep" class="step-lock">
+                                            <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
+                                        </span>
+                                        <span v-if="claimRewardsStep" class="step-check">
+                                            <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
+                                        </span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="quests-modal-step-info width-full display-flex flex-column justify-end">
+                            <h1 class="text-center mb-92">{{ descriptionEvent }}</h1>
+
+                            <button
+                                :style="{ backgroundColor: claimRewardsStep ? '#8f75fe' : '#92FE75' }"
+                                class="main-custom-btn"
+                                @click="setEventDone"
+                            >
+                                <span>
+                                    <n-icon :component="CheckmarkSharp" :depth="1" :size="16" color="currentColor" />
+                                </span>
+                                <span>{{ claimRewardsStep ? 'CLAIM!!!!' : 'Done' }}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="steps-all-w display-flex gap-20">
-                    <div class="steps-sidebar-w display-flex flex-column gap-8">
-                        <div class="reward-count-w display-flex flex-row justify-between">
-                            <div class="display-grid align-self-center">
-                                <p>Reward</p>
-                                <h2>{{ props.card.reward }}</h2>
-                            </div>
-                            <div class="">
-                                <n-image alt="You are the King" class="reward-ico" src="./images/korona.png" />
-                            </div>
-                        </div>
-                        <div class="padding-tb-8px">
-                            <h3>Finish all steps</h3>
-                        </div>
-                        <div class="steps-btns-wrapper display-grid gap-8">
-                            <button
-                                v-for="(event, i) in props.card.events"
-                                :key="event.title"
-                                :class="[
-                                    'quest-modal-step-btn display-flex flex-row align-items-center justify-between',
-                                    { 'active-step': activeEventIndex === i, 'done-step': event.status }
-                                ]"
-                                :disabled="!event.status"
-                                @click="setEventDescription(event)"
-                            >
-                                <span class="display-flex align-items-center gap-8">
-                                    <span class="step-ico display-flex align-items-center justify-center">
-                                        {{ i + 1 }}
-                                    </span>
-                                    <span class="step-title">{{ event.title }}</span>
-                                </span>
-                                <span class="ico-w-28">
-                                    <span v-if="activeEventIndex != i && !event.status" class="step-lock">
-                                        <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
-                                    </span>
-                                    <span v-if="event.status && activeEventIndex" class="step-check">
-                                        <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
-                                    </span>
-                                </span>
-                            </button>
-
-                            <button
-                                :class="[
-                                    'quest-modal-step-btn display-flex flex-row align-items-center justify-between',
-                                    { 'active-step': claimRewardsStep, 'done-step': claimRewardsStep }
-                                ]"
-                            >
-                                <span class="display-flex align-items-center gap-8">
-                                    <span class="step-ico display-flex align-items-center justify-center">
-                                        <n-icon :component="Star" :depth="1" :size="16" color="#8F75FE" />
-                                    </span>
-                                    <span class="step-title text-color-brand-aviation">Claim rewards</span>
-                                </span>
-                                <span class="ico-w-28">
-                                    <span v-if="!claimRewardsStep" class="step-lock">
-                                        <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
-                                    </span>
-                                    <span v-if="claimRewardsStep" class="step-check">
-                                        <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
-                                    </span>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="quests-modal-step-info width-full display-flex flex-column justify-end">
-                        <h1 class="text-center mb-92">{{ descriptionEvent }}</h1>
-
-                        <button class="main-custom-btn" @click="handleButtonClick">
-                            <span>
-                                <n-icon :component="CheckmarkSharp" :depth="1" :size="16" color="currentColor" />
-                            </span>
-                            <span>{{ claimRewardsStep ? 'CLAIM!!!!' : 'Done' }}</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </n-spin>
         </n-modal>
     </div>
 </template>
@@ -163,11 +170,12 @@ import abi from '@/contracts/abi.json'
 import type { ContractFunctionArgs } from 'viem'
 
 const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
-
+const showModal = ref(false)
 const message = useMessage()
 const { address, chainId } = useAccount()
 const props = defineProps<{
     card: IQuestCard
+    lastParty: unknown
 }>()
 
 const emit = defineEmits<{
@@ -199,9 +207,15 @@ const setEventDescription = (event: IEventCard) => {
     descriptionEvent.value = event.description
 }
 
-const setEventDone = () => {
+const claimTask = async (party_id: number, task_id: string) => {
+    functionName.value = 'claim'
+    args.value = [party_id, task_id, 'secret']
+    actionContract()
+}
+
+const setEventDone = async () => {
     if (claimRewardsStep.value) {
-        actionContract()
+        await claimTask(props.lastParty as number, 'sd')
     }
     if (activeEvent.value) {
         emit('setEvent', { cardId: props.card.id, eventTitle: activeEvent.value.title })
@@ -211,40 +225,27 @@ const setEventDone = () => {
             activeEventIndex.value++
             setEventDescription(props.card.events[activeEventIndex.value])
         } else {
-            args.value = [1, 'sd', 'sd']
             claimRewardsStep.value = true
         }
     }
 }
 
-const showModal = ref(false)
-
 onMounted(() => {
     setEventDescription(props.card.events[0])
 })
 
-// watch(isPending, newVal => {
-//     if (newVal) {
-//         message.loading('Fetching...')
-//     }
-// })
-//
-// watch(isError, newVal => {
-//     if (newVal) {
-//         message.error(`Error: ${error.value?.message}`)
-//     }
-// })
-//
-// watch(isSuccess, newVal => {
-//     if (newVal) {
-//         message.success(`Success: ${data.value}`)
-//     }
-// })
-
-const handleButtonClick = () => {
-    setEventDone()
-    actionContract()
-}
+watch(
+    () => isSuccess.value,
+    () => {
+        message.success(`Done ${data.value}`)
+    }
+)
+watch(
+    () => isError.value,
+    () => {
+        message.error(`Error ${error.value?.message}`)
+    }
+)
 </script>
 
 <style lang="scss">

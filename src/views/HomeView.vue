@@ -10,9 +10,6 @@
                         <button class="tech-btn">
                             <span><n-icon :component="SettingsSharp" :depth="1" :size="24" color="#fff" /></span>
                         </button>
-                        <button class="tech-btn" @click="refetchContract">
-                            <span><n-icon :component="SettingsSharp" :depth="1" :size="24" color="#fff" /></span>
-                        </button>
                     </div>
                     <div class="display-flex flex-row gap-8 align-items-center op-06">
                         <p>
@@ -83,11 +80,6 @@
                             </span>
                             <p>Create party</p>
                         </RouterLink>
-                        <div>
-                            <p v-if="isPending">Fetching...</p>
-                            <p v-if="isError">Error: {{ error?.message }}</p>
-                            <p v-if="isSuccess">Success: {{ data }}</p>
-                        </div>
                     </n-tab-pane>
 
                     <n-tab-pane :tab="`Quests ${questCards.length}`" name="quests">
@@ -97,6 +89,7 @@
                                     v-for="card in questCards"
                                     :key="card.id"
                                     :card="card"
+                                    :lastParty="lastPartyId"
                                     @set-event="handleSetEvent"
                                 ></QuestCard>
                             </KeepAlive>
@@ -113,19 +106,17 @@ import PartiesTableElement from '@/components/PartiesTableElement.vue'
 import type { TableRowData } from '@/components/tableElement.type.ts'
 import type { IEventCard, IQuestCard } from '@/types'
 import { useMainStore } from '@/stores'
-import { useAccount, useWriteContract } from '@wagmi/vue'
+import { useAccount, useReadContract } from '@wagmi/vue'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
 import { RouterLink } from 'vue-router'
 import { reactive, ref } from 'vue'
 import abi from '@/contracts/abi.json'
-import type { ContractFunctionArgs } from 'viem'
 
 const store = useMainStore()
 
 const { isConnected, address, chainId } = useAccount()
-const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
 const message = useMessage()
 const { text, copy, copied, isSupported } = useClipboard()
 
@@ -136,20 +127,27 @@ const copyHandler = (textCopy: string) => {
         })
     }
 }
-const functionName = ref('createRS')
-const args = ref<ContractFunctionArgs>([])
-const { data, error, isPending, isSuccess, isError, writeContract } = useWriteContract()
+const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
+const { data: lastPartyId, refetch } = useReadContract({
+    abi,
+    chainId: chainId.value,
+    address: contractAddress1,
+    account: address.value,
+    functionName: 'lastPartyId',
+    query: {
+        enabled: true
+    }
+})
 
-const actionContract = () => {
-    writeContract({
-        abi,
-        chainId: chainId.value,
-        address: contractAddress1,
-        account: address.value,
-        functionName: functionName.value,
-        ...(args.value && args.value.length ? { args: args.value } : {})
-    })
+const getLastPartyId = async () => {
+    await refetch()
+    message.info(`last Party Id: ${lastPartyId.value}`)
+    console.log('last Party Id:', lastPartyId.value)
 }
+
+onMounted(() => {
+    getLastPartyId()
+})
 
 const questCards: IQuestCard[] = reactive([
     {

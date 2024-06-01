@@ -116,7 +116,7 @@ const rows: ComradeTableElementProps[] = [
     {
         index: 1,
         party: {
-            avatar: '/images/avatar-main.jpg'
+            avatar: './images/avatar-main.jpg'
         },
         username: '@malamuth (you)',
         type: 'Owner',
@@ -130,7 +130,7 @@ const rows: ComradeTableElementProps[] = [
     {
         index: 2,
         party: {
-            avatar: '/images/user5-1.jpg'
+            avatar: './images/user5-1.jpg'
         },
         username: '@mitch',
         type: 'Telegram members',
@@ -144,7 +144,7 @@ const rows: ComradeTableElementProps[] = [
     {
         index: 3,
         party: {
-            avatar: '/images/user5.jpg'
+            avatar: './images/user5.jpg'
         },
         username: '@Monster',
         type: 'Telegram members',
@@ -158,7 +158,7 @@ const rows: ComradeTableElementProps[] = [
     {
         index: 4,
         party: {
-            avatar: '/images/user7.jpg'
+            avatar: './images/user7.jpg'
         },
         username: '@Graydrak',
         type: 'Telegram members',
@@ -172,7 +172,7 @@ const rows: ComradeTableElementProps[] = [
     {
         index: 5,
         party: {
-            avatar: '/images/user4.jpg'
+            avatar: './images/user4.jpg'
         },
         username: '@rinaxdc',
         type: 'Telegram members',
