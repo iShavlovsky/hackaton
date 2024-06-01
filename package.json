@@ -16,6 +16,7 @@
     "@tanstack/vue-query": "^5.40.0",
     "@vueuse/core": "^10.10.0",
     "@wagmi/vue": "^0.0.10",
+    "abitype": "^1.0.2",
     "pinia": "^2.1.7",
     "viem": "^2.13.1",
     "vue": "^3.4.21",

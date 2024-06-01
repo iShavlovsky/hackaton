@@ -10,6 +10,9 @@
                         <button class="tech-btn">
                             <span><n-icon :component="SettingsSharp" :depth="1" :size="24" color="#fff" /></span>
                         </button>
+                        <button class="tech-btn" @click="refetchContract">
+                            <span><n-icon :component="SettingsSharp" :depth="1" :size="24" color="#fff" /></span>
+                        </button>
                     </div>
                     <div class="display-flex flex-row gap-8 align-items-center op-06">
                         <p>
@@ -80,7 +83,13 @@
                             </span>
                             <p>Create party</p>
                         </RouterLink>
+                        <div>
+                            <p v-if="isPending">Fetching...</p>
+                            <p v-if="isError">Error: {{ error?.message }}</p>
+                            <p v-if="isSuccess">Success: {{ data }}</p>
+                        </div>
                     </n-tab-pane>
+
                     <n-tab-pane :tab="`Quests ${questCards.length}`" name="quests">
                         <div class="quest-cards-list-w display-flex gap-8">
                             <KeepAlive>
@@ -103,18 +112,28 @@ import { Add, CopyOutline, SettingsSharp } from '@vicons/ionicons5'
 import PartiesTableElement from '@/components/PartiesTableElement.vue'
 import type { TableRowData } from '@/components/tableElement.type.ts'
 import type { IEventCard, IQuestCard } from '@/types'
-import { useContractStore, useMainStore } from '@/stores'
-import { useAccount } from '@wagmi/vue'
+import { useMainStore } from '@/stores'
+import {
+    useAccount,
+    useAccountEffect,
+    useConfig,
+    useConnectorClient,
+    useSimulateContract,
+    useWriteContract
+} from '@wagmi/vue'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
 import { RouterLink } from 'vue-router'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+// import useContract from '@/composables/useContract'
+import abi from '@/contracts/abi.json'
+import type { ContractFunctionArgs } from 'viem'
 
 const store = useMainStore()
-const useContract = useContractStore()
 
-const { isConnected, address } = useAccount()
+const { isConnected, address, chainId } = useAccount()
+const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
 const message = useMessage()
 const { text, copy, copied, isSupported } = useClipboard()
 
@@ -124,6 +143,20 @@ const copyHandler = (textCopy: string) => {
             if (copied) message.success(text.value)
         })
     }
+}
+const functionName = ref('createRS')
+const args = ref<ContractFunctionArgs>([])
+const { data, error, isPending, isSuccess, isError, writeContract } = useWriteContract()
+
+const refetchContract = () => {
+    writeContract({
+        abi,
+        chainId: chainId.value,
+        address: contractAddress1,
+        account: address.value,
+        functionName: functionName.value,
+        ...(args.value && args.value.length ? { args: args.value } : {})
+    })
 }
 
 const questCards: IQuestCard[] = reactive([
@@ -237,11 +270,12 @@ const rows: TableRowData[] = [
         },
         owner: {
             avatar: '/images/user7.jpg',
-            name: '@meuw'
+            name: '@meuw',
+            owner: false
         },
         people: 28,
-        yourTokens: 15069,
-        yourTokensPercentage: 34,
+        yourTokens: 3069,
+        yourTokensPercentage: -4,
         totalDistributed: 15069,
         totalDistributedPercentage: 34
     },
@@ -251,17 +285,18 @@ const rows: TableRowData[] = [
             avatar: '/images/party2.jpg',
             name: 'Glitch & Glam',
             description:
-                "It's time for a game party focused on Linea token quests! Join forces with other gamers, tackle challenges, and earn tokens together. Let's m"
+                "Join us for a game party where gamers unite to complete quests and earn Linea tokens. Team up, strategize, and conquer challenges together. Let's embark on this adventure and collect those tokens!"
         },
         owner: {
             avatar: '/images/avatar-main.jpg',
-            name: '@malamuth (you)'
+            name: '@malamuth (you)',
+            owner: true
         },
-        people: 28,
-        yourTokens: 15069,
-        yourTokensPercentage: 34,
-        totalDistributed: 15069,
-        totalDistributedPercentage: 34
+        people: 46,
+        yourTokens: 738,
+        yourTokensPercentage: 20,
+        totalDistributed: 2069,
+        totalDistributedPercentage: 7
     }
 ]
 </script>

@@ -24,10 +24,10 @@ export default defineConfig(({ mode }) => {
                             const libraries = [
                                 'axios',
                                 'pinia',
-                                'vue-router',
-                                '@wagmi/vue',
-                                '@vueuse/core',
-                                '@tanstack/vue-query'
+                                'vue-router'
+                                // '@wagmi/vue',
+                                // '@vueuse/core',
+                                // '@tanstack/vue-query'
                             ]
                             const pattern = new RegExp('/node_modules/(' + libraries.join('|') + ')/')
 
