@@ -2,8 +2,8 @@
     <footer class="footer-w display-flex align-items-center">
         <div class="container display-grid grid-cols-3 align-items-center">
             <p>© revshareparty</p>
-            <nav class="footer-nav justify-center">
-                <ul class="display-flex flex-row gap-40 width-full justify-center">
+            <nav class="footer-nav-w justify-center">
+                <ul class="footer-nav-holder display-flex flex-row gap-40 width-full justify-center">
                     <li>
                         <a>Newsletter</a>
                     </li>
@@ -49,9 +49,23 @@
     height: 133px;
     width: 100%;
     padding: 50px 0;
+    @media (max-width: 880px) {
+        height: auto;
+    }
 
     .container {
         width: 100%;
+        @media (max-width: 880px) {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+    }
+}
+
+.footer-nav-holder {
+    @media (max-width: 500px) {
+        gap: 20px;
     }
 }
 

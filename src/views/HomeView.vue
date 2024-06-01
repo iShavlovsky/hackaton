@@ -1,7 +1,7 @@
 <template>
     <section>
         <div class="container main-container-padding">
-            <div class="display-flex flex-row gap-40 align-items-center p-tb-24px">
+            <div class="home-hero-w display-flex flex-row gap-40 align-items-center p-tb-24px">
                 <n-avatar :size="120" round src="/images/avatar-main.jpg" />
 
                 <div class="display-flex flex-column gap-8">
@@ -35,8 +35,8 @@
                     type="line"
                 >
                     <n-tab-pane :tab="`Parties ${rows.length}`" name="parties">
-                        <n-space vertical>
-                            <n-table striped>
+                        <n-space class="table-w" vertical>
+                            <n-table class="table-holder" striped>
                                 <thead>
                                     <tr>
                                         <th style="vertical-align: top">#</th>
@@ -82,7 +82,7 @@
                         </RouterLink>
                     </n-tab-pane>
                     <n-tab-pane :tab="`Quests ${questCards.length}`" name="quests">
-                        <div class="display-flex gap-8">
+                        <div class="quest-cards-list-w display-flex gap-8">
                             <KeepAlive>
                                 <QuestCard
                                     v-for="card in questCards"
@@ -274,5 +274,19 @@ const rows: TableRowData[] = [
 
 .px16-divider {
     margin-top: 16px;
+}
+
+.home-hero-w {
+    @media (max-width: 500px) {
+        flex-direction: column;
+    }
+}
+
+.quest-cards-list-w {
+    flex-wrap: wrap;
+}
+
+.table-holder {
+    min-width: 1024px;
 }
 </style>

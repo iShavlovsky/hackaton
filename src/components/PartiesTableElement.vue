@@ -3,7 +3,7 @@
         <td style="text-align: center; vertical-align: middle">{{ index }}</td>
         <td style="vertical-align: middle">
             <div class="display-flex gap-16 align-items-center" style="display: flex; align-items: center">
-                <n-avatar :size="64" :src="party.avatar" bordered />
+                <n-avatar :size="64" :src="party.avatar" bordered class="min-width-64" />
                 <div class="display-flex flex-column gap-2">
                     <h2>{{ party.name }}</h2>
                     <p class="max-w-360 op-06">
@@ -59,3 +59,9 @@ import { ChevronForward, ShareSocialSharp } from '@vicons/ionicons5'
 
 const props = defineProps<TableRowData>()
 </script>
+
+<style lang="scss">
+.min-width-64 {
+    min-width: 64px;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
     <div class="quests-card display-flex flex-column pointer" @click="showModal = true">
-        <n-avatar :size="300" :src="props.card.imageSrc" bordered class="quest-avatar pointer" />
+        <n-avatar :size="300" :src="props.card.imageSrc" bordered class="quest-avatar-img pointer" />
         <n-space class="quests-card-tag-w">
             <n-tag v-for="tag in props.card.tags" :key="tag" :bordered="false" type="info">{{ tag }}</n-tag>
         </n-space>
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="display-flex gap-20">
+                <div class="steps-all-w display-flex gap-20">
                     <div class="steps-sidebar-w display-flex flex-column gap-8">
                         <div class="reward-count-w display-flex flex-row justify-between">
                             <div class="display-grid align-self-center">
@@ -87,7 +87,7 @@
                         <div class="padding-tb-8px">
                             <h3>Finish all steps</h3>
                         </div>
-                        <div class="display-grid gap-8">
+                        <div class="steps-btns-wrapper display-grid gap-8">
                             <button
                                 v-for="(event, i) in props.card.events"
                                 :key="event.title"
@@ -104,12 +104,14 @@
                                     </span>
                                     <span class="step-title">{{ event.title }}</span>
                                 </span>
-                                <span v-if="activeEventIndex != i && !event.status" class="step-lock">
-                                    <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
-                                </span>
-                                <span v-if="event.status && activeEventIndex" class="step-check">
-                                    <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
-                                </span>
+                                <div class="ico-w-28">
+                                    <span v-if="activeEventIndex != i && !event.status" class="step-lock">
+                                        <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
+                                    </span>
+                                    <span v-if="event.status && activeEventIndex" class="step-check">
+                                        <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
+                                    </span>
+                                </div>
                             </button>
 
                             <button
@@ -124,12 +126,14 @@
                                     </span>
                                     <span class="step-title text-color-brand-aviation">Claim rewards</span>
                                 </span>
-                                <span v-if="!claimRewardsStep" class="step-lock">
-                                    <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
-                                </span>
-                                <span v-if="claimRewardsStep" class="step-check">
-                                    <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
-                                </span>
+                                <div class="ico-w-28">
+                                    <span v-if="!claimRewardsStep" class="step-lock">
+                                        <n-icon :component="LockClosed" :depth="1" :size="16" color="#fff" />
+                                    </span>
+                                    <span v-if="claimRewardsStep" class="step-check">
+                                        <n-icon :component="Checkmark" :depth="1" :size="28" color="#fff" />
+                                    </span>
+                                </div>
                             </button>
                         </div>
                     </div>
@@ -205,8 +209,9 @@ onMounted(() => {
     max-width: 316px;
 }
 
-.quest-avatar {
+.quest-avatar-img {
     min-height: 300px;
+    min-width: 300px;
 }
 
 .quests-card__header {
@@ -219,12 +224,26 @@ onMounted(() => {
 
 .quests-card-modal-head {
     padding: 36px 0;
+    @media (max-width: 770px) {
+        flex-direction: column;
+        gap: 20px;
+        .quests-card__header {
+            align-items: center;
+            text-align: center;
+        }
+    }
 }
 
 .quest-custom-modal {
     background-color: #151518;
     min-width: 960px;
     border-radius: 24px;
+    @media (max-width: 1024px) {
+        min-width: 90%;
+        h1 {
+            font-size: 23px;
+        }
+    }
 
     .n-base-icon {
         background-color: rgba(255, 255, 255, 0.6);
@@ -244,10 +263,6 @@ onMounted(() => {
 
 .users-quest-avatar {
     margin-right: -12px;
-}
-
-.steps-sidebar-w {
-    min-width: 280px;
 }
 
 .reward-count-w {
@@ -319,5 +334,36 @@ onMounted(() => {
 
 .mb-92 {
     margin-bottom: 92px;
+}
+
+.steps-sidebar-w {
+    min-width: 280px;
+}
+
+.steps-all-w {
+    @media (max-width: 880px) {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.steps-btns-wrapper {
+    @media (max-width: 880px) {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    @media (max-width: 565px) {
+        flex-direction: column;
+    }
+}
+
+.ico-w-28 {
+    display: flex;
+    margin-left: 8px;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
 }
 </style>
