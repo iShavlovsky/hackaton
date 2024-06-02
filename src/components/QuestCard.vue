@@ -139,6 +139,7 @@
                                 </button>
                             </div>
                         </div>
+
                         <div class="quests-modal-step-info width-full display-flex flex-column justify-end">
                             <h1 class="text-center mb-92">{{ descriptionEvent }}</h1>
 
@@ -186,25 +187,28 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue'
 import { Checkmark, CheckmarkSharp, CopyOutline, FileTrayFull, LockClosed, Star } from '@vicons/ionicons5'
-import type { IEventCard, IQuestCard } from '@/types'
-import { useAccount, useReadContract, useSimulateContract, useWriteContract } from '@wagmi/vue'
+import type { ContractFuncctionName, IEventCard, IQuestCard } from '@/types'
+import { custom, http, useAccount, useReadContract, useSimulateContract, useWriteContract } from '@wagmi/vue'
 import { useMessage } from 'naive-ui'
-import abi from '@/contracts/abi.json'
-import type { ContractFunctionArgs } from 'viem'
+// import abi from '@/contracts/abi.json'
+import { abi } from '@/contracts/abi.ts'
+import { type ContractFunctionArgs, createPublicClient, createWalletClient } from 'viem'
 import { RouterLink } from 'vue-router'
-import { useClipboard } from '@vueuse/core'
+import { type DeepMaybeRef, useClipboard } from '@vueuse/core'
+import { config } from '@/config.ts'
+import { getAccount } from '@wagmi/core'
 
 const showModal = ref(false)
 const message = useMessage()
-const { address, chainId } = useAccount()
+const { address, chainId, chain } = useAccount()
 const props = defineProps<{
     card: IQuestCard
     meta: {
-        partyId: number
-        lastPartyId: unknown
-        influencersParty: unknown
-        totalPartyTasks: unknown
-        task_id: unknown
+        partyId: bigint
+        lastPartyId: bigint
+        influencersParty: `0x${string}`
+        totalPartyTasks: bigint
+        task_id: `0x${string}`
     }
 }>()
 
@@ -231,28 +235,33 @@ const {
 } = useReadContract({
     ...configContract,
     functionName: 'generatePrivateKey',
-    args: [props.meta.influencersParty, props.meta.task_id]
+    args: [props.meta.influencersParty, props.meta.task_id],
+    query: {
+        enabled: true
+    }
 })
 
-const functionName = ref('claim')
+const functionName = ref<ContractFuncctionName>('claim')
 const args = ref<ContractFunctionArgs>([props.meta.partyId, props.meta.task_id, privateKey.value])
 
 const { data, error, isPending, isSuccess, isError, writeContract } = useWriteContract()
 
 const actionContract = () => {
     writeContract({
-        ...configContract,
+        abi,
+        chainId: chainId.value,
+        address: import.meta.env.VITE_ID_CONTRACT_ADDRESS_1,
+        account: address.value,
         functionName: functionName.value,
-        ...(args.value && args.value.length ? { args: args.value } : {})
+        args: args.value
     })
 }
 
 const setEventDescription = (event: IEventCard) => {
     descriptionEvent.value = event.description
 }
-
 // const createRS = async () => {
-//     functionName.value = 'createRS'
+//     functionName.value = ' createRS'
 //     args.value = []
 //     actionContract()
 // }
@@ -262,15 +271,57 @@ const setEventDescription = (event: IEventCard) => {
 //     args.value = [party_id, { temp }]
 //     actionContract()
 // }
-
+const publicClient = createPublicClient({
+    chain: chain.value,
+    transport: http()
+})
+const walletClient = createWalletClient({
+    chain: chain.value,
+    transport: custom(window.ethereum)
+})
+// const res = useSimulateContract({
+//     ...configContract,
+//     functionName: 'claim',
+//     args: [
+//         2n,
+//         '0xde9c1148e787d7a26e2fcd028e637e69ded89cff4fabccfc3b22bfb3d68f1809',
+//         '0x35b82d0415d5bdee68321e4f31c55941a1b2e2e2462b915b7664b62497243399'
+//     ]
+// })
+// console.log(res.error)
 const claimTask = async () => {
     functionName.value = 'claim'
-    args.value = [props.meta.partyId, props.meta.task_id, privateKey.value]
-    // writeContract({
-    //     ...configContract,
-    // })
-    console.log(args.value)
-    actionContract()
+    args.value = [props.meta.lastPartyId, props.meta.task_id, privateKey.value]
+
+    if (privateKey.value) {
+        const { request } = await publicClient.simulateContract({
+            abi,
+            chain: chain.value,
+            address: import.meta.env.VITE_ID_CONTRACT_ADDRESS_1,
+            account: address.value,
+            functionName: 'claim',
+            args: [props.meta.partyId, props.meta.task_id, privateKey.value]
+        })
+        const hash = await walletClient.writeContract(request)
+        console.log(hash)
+        // writeContract({
+        //     ...configContract,
+        //     functionName: 'claim',
+        //     args: [props.meta.partyId, props.meta.task_id, privateKey.value]
+        // })
+    } else {
+        console.log('privateKey!!!', privateKey.value)
+        await getPrivateKey()
+        await claimTask()
+    }
+
+    // [
+    // props.meta.lastPartyId,
+    //     '0x6ff9871fef1fd1e158fa66d4f42a44109306817d712455047a5c0b807fe168df',
+    //     '0xfa6f9f0c1707920dba4eaa0cb6af1c31716bcc9a0ab2d687ee303977e40d9e24'
+    // ]
+    // console.log(args.value)
+    // actionContract()
 }
 
 const burnTokens = async (id: number, value: number) => {
@@ -285,36 +336,16 @@ const burnBatchTokens = async (ids: number[], values: number[]) => {
     actionContract()
 }
 
-const {
-    data: claim,
-    refetch: getclaim,
-    isSuccess: isClaim,
-    isPending: isPendingClaim,
-    queryKey
-} = useSimulateContract({
-    ...configContract,
-    functionName: 'claim',
-    args: [props.meta.partyId as number, props.meta.task_id as string, privateKey.value],
-    query: {
-        enabled: true
-    }
-})
-onMounted(async () => {
-    // getPrivateKey()
-    console.log(privateKey.value)
-})
-// console.log(queryKey)
 const setEventDone = async () => {
     if (claimRewardsStep.value) {
-        // await getclaim()
-        // console.log(claim, queryKey)
         await claimTask()
     }
 
     if (activeEvent.value) {
         emit('setEvent', { cardId: props.card.id, eventTitle: activeEvent.value.title })
         activeEvent.value.status = true
-
+        await getPrivateKey()
+        console.log('privateKey', privateKey.value, queryPrivateKey)
         if (activeEventIndex.value < props.card.events.length - 1) {
             activeEventIndex.value++
             setEventDescription(props.card.events[activeEventIndex.value])
@@ -336,6 +367,7 @@ const copyHandler = (textCopy: string) => {
 
 onMounted(() => {
     setEventDescription(props.card.events[0])
+    console.log('privateKey', privateKey.value, queryPrivateKey)
 })
 
 watch(

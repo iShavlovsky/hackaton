@@ -65,3 +65,13 @@ export interface PartyData {
     totalDistributed: number
     totalDistributedPercentage: number
 }
+
+export type ContractFuncctionName =
+    | 'burn'
+    | 'burnBatch'
+    | 'claim'
+    | 'createRS'
+    | 'createTask'
+    | 'safeBatchTransferFrom'
+    | 'safeTransferFrom'
+    | 'setApprovalForAll'

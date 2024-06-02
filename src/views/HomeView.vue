@@ -113,14 +113,15 @@
 import { Add, CopyOutline, SettingsSharp } from '@vicons/ionicons5'
 import PartiesTableElement from '@/components/PartiesTableElement.vue'
 import { useMainStore, usePartyStore, useQuestsStore } from '@/stores'
-import { useAccount, useReadContract } from '@wagmi/vue'
+import { useAccount, useReadContract, useSimulateContract } from '@wagmi/vue'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
 import { RouterLink } from 'vue-router'
-import abi from '@/contracts/abi.json'
 import { ref, watch } from 'vue'
-import { type ContractFunctionArgs, encodeAbiParameters, keccak256, parseAbiParameters } from 'viem'
+import { encodeAbiParameters, keccak256 } from 'viem'
+// import abi from '@/contracts/abi.json'
+import { abi } from '@/contracts/abi.ts'
 
 const store = useMainStore()
 const partyStore = usePartyStore()
@@ -138,15 +139,16 @@ const copyHandler = (textCopy: string) => {
     }
 }
 
-const partyId = ref(1)
-const task_id = ref()
+const partyId = ref<bigint>(3n) //0xaE77aF8791CF61E5405231bC7F0f4850c308bb65
+const partyIdTasks = ref<bigint>(2n)
+const task_id = ref<`0x${string}`>()
 const configContract = reactive({
     abi,
     chainId: chainId.value,
     address: import.meta.env.VITE_ID_CONTRACT_ADDRESS_1,
     account: address.value
 })
-const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
+
 const { data: lastPartyId, refetch: getLastPartyId } = useReadContract({
     ...configContract,
     functionName: 'lastPartyId',
@@ -154,7 +156,7 @@ const { data: lastPartyId, refetch: getLastPartyId } = useReadContract({
         enabled: true
     }
 })
-
+// influencersParty(uint256 party_id) external view returns(address)
 const { data: influencersParty, refetch: getInfluencersParty } = useReadContract({
     ...configContract,
     functionName: 'influencersParty',
@@ -167,13 +169,17 @@ const { data: influencersParty, refetch: getInfluencersParty } = useReadContract
 const { data: totalPartyTasks, refetch: getTotalPartyTasks } = useReadContract({
     ...configContract,
     functionName: 'total_party_tasks',
-    args: [partyId.value],
+    args: [partyIdTasks.value],
     query: {
         enabled: true
     }
 })
 
 const getTaskId = async () => {
+    // task_id
+    // bytes32 task_id = keccak256(
+    //     abi.encode(party_id, party_task_id, influencer)
+    // );
     const encodedData = encodeAbiParameters(
         [
             { name: 'party_id', type: 'uint256' },
@@ -183,20 +189,8 @@ const getTaskId = async () => {
 
         [lastPartyId.value as bigint, totalPartyTasks.value as bigint, influencersParty.value as `0x${string}`]
     )
-    const hash = keccak256(encodedData)
-    task_id.value = `${hash}`
+    task_id.value = keccak256(encodedData)
     return task_id.value
-}
-
-const f = async () => {
-    // await getLastPartyId()
-    console.log('lastPartyId', lastPartyId.value)
-    // await getInfluencersParty()
-    console.log('influencersParty', influencersParty.value)
-    // await getTotalPartyTasks()
-    console.log('totalPartyTasks', totalPartyTasks.value)
-    // await getTaskId()
-    console.log('task_id', task_id.value)
 }
 
 onMounted(async () => {
