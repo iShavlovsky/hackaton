@@ -228,6 +228,7 @@ import type { ContractFunctionArgs } from 'viem'
 import abi from '@/contracts/abi.json'
 import { useClipboard } from '@vueuse/core'
 import { usePartyStore } from '@/stores'
+
 const partyStore = usePartyStore()
 const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
 
@@ -403,9 +404,11 @@ watch(
         if (!newOppo) resetPartyMember()
     }
 )
+
 function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
+
 function generateRandomData() {
     const people = getRandomInt(1, 100)
     const yourTokens = getRandomInt(1000, 5000)
@@ -421,6 +424,7 @@ function generateRandomData() {
         totalDistributedPercentage
     }
 }
+
 const imagesOwner = ['./images/user7.jpg', './images/avatar-main.jpg']
 const imagesParty = ['./images/party2.jpg', './images/party1.jpg']
 
@@ -470,6 +474,10 @@ watch(
     background-color: #151518;
     border-radius: 24px;
     padding: 40px;
+
+    @media (max-width: 520px) {
+        padding: 20px;
+    }
 
     &.party-no-bg {
         background-color: transparent;

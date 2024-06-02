@@ -18,10 +18,15 @@ section, header, footer {
   max-width: 1344px;
   margin: 0 auto;
   padding: 0 16px;
+
+
 }
 
 .main-container-padding {
   padding: 40px 16px;
+  @media (max-width: 520px) {
+    padding: 40px 0;
+  }
 }
 
 h1 {
