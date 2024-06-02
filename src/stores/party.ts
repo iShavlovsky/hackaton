@@ -34,7 +34,7 @@ export const usePartyStore = defineStore('party', () => {
             totalDistributedPercentage: 34
         },
         {
-            index: 1,
+            index: 2,
             party: {
                 avatar: './images/party2.jpg',
                 name: 'Glitch & Glam',

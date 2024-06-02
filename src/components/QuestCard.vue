@@ -148,10 +148,12 @@
                                 class="main-custom-btn"
                                 @click="setEventDone"
                             >
-                                <span>
+                                <span :style="{ color: claimRewardsStep ? '#ffffff' : '' }">
                                     <n-icon :component="CheckmarkSharp" :depth="1" :size="16" color="currentColor" />
                                 </span>
-                                <span>{{ claimRewardsStep ? 'CLAIM!!!!' : 'Done' }}</span>
+                                <span :style="{ color: claimRewardsStep ? '#ffffff' : '' }">
+                                    {{ claimRewardsStep ? 'CLAIM!!!!' : 'Done' }}
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -159,14 +161,31 @@
             </n-spin>
         </n-modal>
 
-        <n-modal v-model:show="isSuccess" class="quest-custom-modal min-w-648" preset="dialog" title="Dialog">
+        <n-modal
+            v-model:show="showModal2"
+            class="quest-custom-modal min-w-648"
+            preset="dialog"
+            title="Dialog"
+            transform-origin="center"
+        >
             <template #header>
                 <div></div>
             </template>
-            <div class="quests-card-modal-content p-tb-24px mt-40">
-                <h1 class="text-center">Congrats! 15 TBA Claimed!</h1>
+            <div class="display-flex flex-column align-items-center quests-card-modal-content p-tb-24px mt-40">
+                <span>
+                    <n-icon :component="CheckmarkDoneCircle" :depth="1" :size="64" color="#92FE75" />
+                </span>
+                <h1 class="text-center">
+                    Congrats!
+                    <span :style="{ color: '#8f75fe' }">15 TBA</span>
+                    Claimed!
+                </h1>
                 <div class="display-grid gap-8 mt-40">
                     <div class="display-flex flex-row gap-8 align-items-center op-06">
+                        <div class="firework"></div>
+                        <div class="firework"></div>
+                        <div class="firework"></div>
+
                         <p>
                             {{ data }}
                         </p>
@@ -174,10 +193,6 @@
                             <span><n-icon :component="CopyOutline" :depth="1" :size="24" color="#fff" /></span>
                         </button>
                     </div>
-                    <a :href="`https://sepolia.lineascan.build/address/${data}`"></a>
-                    <RouterLink class="main-custom-btn width-full" to="/" type="button">
-                        <span>Come back home</span>
-                    </RouterLink>
                 </div>
             </div>
         </n-modal>
@@ -186,19 +201,25 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue'
-import { Checkmark, CheckmarkSharp, CopyOutline, FileTrayFull, LockClosed, Star } from '@vicons/ionicons5'
+import {
+    Checkmark,
+    CheckmarkSharp,
+    CopyOutline,
+    FileTrayFull,
+    LockClosed,
+    Star,
+    CheckmarkDoneCircle
+} from '@vicons/ionicons5'
 import type { ContractFuncctionName, IEventCard, IQuestCard } from '@/types'
-import { custom, http, useAccount, useReadContract, useSimulateContract, useWriteContract } from '@wagmi/vue'
+import { useAccount, useReadContract, useWriteContract } from '@wagmi/vue'
 import { useMessage } from 'naive-ui'
 // import abi from '@/contracts/abi.json'
 import { abi } from '@/contracts/abi.ts'
-import { type ContractFunctionArgs, createPublicClient, createWalletClient } from 'viem'
-import { RouterLink } from 'vue-router'
-import { type DeepMaybeRef, useClipboard } from '@vueuse/core'
-import { config } from '@/config.ts'
-import { getAccount } from '@wagmi/core'
+import { type ContractFunctionArgs } from 'viem'
+import { useClipboard } from '@vueuse/core'
 
 const showModal = ref(false)
+const showModal2 = ref(false)
 const message = useMessage()
 const { address, chainId, chain } = useAccount()
 const props = defineProps<{
@@ -253,6 +274,7 @@ const actionContract = () => {
         address: import.meta.env.VITE_ID_CONTRACT_ADDRESS_1,
         account: address.value,
         functionName: functionName.value,
+        // @ts-ignore
         args: args.value
     })
 }
@@ -260,68 +282,22 @@ const actionContract = () => {
 const setEventDescription = (event: IEventCard) => {
     descriptionEvent.value = event.description
 }
-// const createRS = async () => {
-//     functionName.value = ' createRS'
-//     args.value = []
-//     actionContract()
-// }
-//
-// const createTask = async (party_id: number, temp: number) => {
-//     functionName.value = 'createTask'
-//     args.value = [party_id, { temp }]
-//     actionContract()
-// }
-const publicClient = createPublicClient({
-    chain: chain.value,
-    transport: http()
-})
-const walletClient = createWalletClient({
-    chain: chain.value,
-    transport: custom(window.ethereum)
-})
-// const res = useSimulateContract({
-//     ...configContract,
-//     functionName: 'claim',
-//     args: [
-//         2n,
-//         '0xde9c1148e787d7a26e2fcd028e637e69ded89cff4fabccfc3b22bfb3d68f1809',
-//         '0x35b82d0415d5bdee68321e4f31c55941a1b2e2e2462b915b7664b62497243399'
-//     ]
-// })
-// console.log(res.error)
+
 const claimTask = async () => {
     functionName.value = 'claim'
     args.value = [props.meta.lastPartyId, props.meta.task_id, privateKey.value]
 
     if (privateKey.value) {
-        const { request } = await publicClient.simulateContract({
-            abi,
-            chain: chain.value,
-            address: import.meta.env.VITE_ID_CONTRACT_ADDRESS_1,
-            account: address.value,
+        writeContract({
+            ...configContract,
             functionName: 'claim',
             args: [props.meta.partyId, props.meta.task_id, privateKey.value]
         })
-        const hash = await walletClient.writeContract(request)
-        console.log(hash)
-        // writeContract({
-        //     ...configContract,
-        //     functionName: 'claim',
-        //     args: [props.meta.partyId, props.meta.task_id, privateKey.value]
-        // })
     } else {
         console.log('privateKey!!!', privateKey.value)
         await getPrivateKey()
         await claimTask()
     }
-
-    // [
-    // props.meta.lastPartyId,
-    //     '0x6ff9871fef1fd1e158fa66d4f42a44109306817d712455047a5c0b807fe168df',
-    //     '0xfa6f9f0c1707920dba4eaa0cb6af1c31716bcc9a0ab2d687ee303977e40d9e24'
-    // ]
-    // console.log(args.value)
-    // actionContract()
 }
 
 const burnTokens = async (id: number, value: number) => {
@@ -338,16 +314,17 @@ const burnBatchTokens = async (ids: number[], values: number[]) => {
 
 const setEventDone = async () => {
     if (claimRewardsStep.value) {
+        await getPrivateKey()
+        console.log('privateKey', privateKey.value, queryPrivateKey)
         await claimTask()
     }
 
     if (activeEvent.value) {
         emit('setEvent', { cardId: props.card.id, eventTitle: activeEvent.value.title })
         activeEvent.value.status = true
-        await getPrivateKey()
-        console.log('privateKey', privateKey.value, queryPrivateKey)
         if (activeEventIndex.value < props.card.events.length - 1) {
             activeEventIndex.value++
+            message.success('Done!')
             setEventDescription(props.card.events[activeEventIndex.value])
         } else {
             claimRewardsStep.value = true
@@ -373,6 +350,7 @@ onMounted(() => {
 watch(
     () => isSuccess.value,
     () => {
+        showModal2.value = true
         message.success(`Done ${data.value}`)
     }
 )
@@ -407,6 +385,141 @@ watch(
 </script>
 
 <style lang="scss">
+@keyframes firework {
+    0% {
+        transform: translate(var(--x), var(--initialY));
+        width: var(--initialSize);
+        opacity: 1;
+    }
+    50% {
+        width: 0.5vmin;
+        opacity: 1;
+    }
+    100% {
+        width: var(--finalSize);
+        opacity: 0;
+    }
+}
+
+.firework,
+.firework::before,
+.firework::after {
+    --initialSize: 0.7vmin;
+    --finalSize: 45vmin;
+    --particleSize: 0.5vmin;
+    --color1: yellow;
+    --color2: khaki;
+    --color3: white;
+    --color4: lime;
+    --color5: gold;
+    --color6: mediumseagreen;
+    --y: -30vmin;
+    --x: -50%;
+    --initialY: 60vmin;
+    content: '';
+    animation: firework 2s infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, var(--y));
+    width: var(--initialSize);
+    aspect-ratio: 1;
+    pointer-events: none;
+    user-select: none;
+    background:
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 0% 0%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 100% 0%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 100% 100%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 0% 100%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 50% 0%,
+        radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 100% 50%,
+        radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 50% 100%,
+        radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 0% 50%,
+        /* bottom right */ radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 80% 90%,
+        radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 95% 90%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 90% 70%,
+        radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 100% 60%,
+        radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 55% 80%,
+        radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 70% 77%,
+        /* bottom left */ radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 22% 90%,
+        radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 45% 90%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 33% 70%,
+        radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 10% 60%,
+        radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 31% 80%,
+        radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 28% 77%,
+        radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 13% 72%,
+        /* top left */ radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 80% 10%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 95% 14%,
+        radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 90% 23%,
+        radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 100% 43%,
+        radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 85% 27%,
+        radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 77% 37%,
+        radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 60% 7%,
+        /* top right */ radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 22% 14%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 45% 20%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 33% 34%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 10% 29%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 31% 37%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 28% 7%,
+        radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 13% 42%;
+    background-size: var(--initialSize) var(--initialSize);
+    background-repeat: no-repeat;
+}
+
+.firework::before {
+    --x: -50%;
+    --y: -50%;
+    --initialY: -50%;
+    transform: translate(-50%, -50%) rotate(40deg) scale(1.3) rotateY(40deg);
+}
+
+.firework::after {
+    --x: -50%;
+    --y: -50%;
+    --initialY: -50%;
+    transform: translate(-50%, -50%) rotate(170deg) scale(1.15) rotateY(-30deg);
+    animation: fireworkPseudo 2s infinite;
+}
+
+.firework:nth-child(2) {
+    --x: 30vmin;
+}
+
+.firework:nth-child(2),
+.firework:nth-child(2)::before,
+.firework:nth-child(2)::after {
+    --color1: pink;
+    --color2: violet;
+    --color3: fuchsia;
+    --color4: orchid;
+    --color5: plum;
+    --color6: lavender;
+    --finalSize: 40vmin;
+    left: 30%;
+    top: 60%;
+    animation-delay: -0.25s;
+}
+
+.firework:nth-child(3) {
+    --x: -30vmin;
+    --y: -50vmin;
+}
+
+.firework:nth-child(3),
+.firework:nth-child(3)::before,
+.firework:nth-child(3)::after {
+    --color1: cyan;
+    --color2: lightcyan;
+    --color3: lightblue;
+    --color4: PaleTurquoise;
+    --color5: SkyBlue;
+    --color6: lavender;
+    --finalSize: 35vmin;
+    left: 70%;
+    top: 60%;
+    animation-delay: -0.4s;
+}
+
 .quests-card {
     border-radius: 24px;
     padding: 8px;

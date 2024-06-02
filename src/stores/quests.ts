@@ -20,25 +20,25 @@ export const useQuestsStore = defineStore('quests', () => {
                 {
                     title: 'Intro to Ape Bond Value',
                     description:
-                        'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                        '1 - Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
                     status: false
                 },
                 {
                     title: 'Read Announcement',
                     description:
-                        'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                        '3 - Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
                     status: false
                 },
                 {
                     title: 'Join ApeBond on TG',
                     description:
-                        'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                        '4 - Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
                     status: false
                 },
                 {
                     title: 'Purchase a Bond via ApeBond',
                     description:
-                        'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                        '5 - Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
                     status: false
                 }
             ]
@@ -59,31 +59,31 @@ export const useQuestsStore = defineStore('quests', () => {
                 {
                     title: 'Intro to Ape Bond Value',
                     description:
-                        'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                        '1 - Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
                     status: true
                 },
                 {
                     title: 'Read Announcement',
                     description:
-                        'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                        '2 - Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
                     status: false
                 },
                 {
                     title: 'Join ApeBond on Discord',
                     description:
-                        'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                        '3 - Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
                     status: false
                 },
                 {
                     title: 'Join ApeBond on TG',
                     description:
-                        'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                        '4 - Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
                     status: false
                 },
                 {
                     title: 'Purchase a Bond via ApeBond',
                     description:
-                        'Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
+                        '5 - Join the ApeBond community, get ABOND (the native utility token) and enjoy discounted token purchases through Bonds',
                     status: false
                 }
             ]

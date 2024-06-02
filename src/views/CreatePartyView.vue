@@ -207,7 +207,7 @@
                                 <span><n-icon :component="CopyOutline" :depth="1" :size="24" color="#fff" /></span>
                             </button>
                         </div>
-                        <RouterLink class="main-custom-btn width-full" to="/" type="button">
+                        <RouterLink class="main-custom-btn width-full" to="/">
                             <span>Come back home</span>
                         </RouterLink>
                     </div>

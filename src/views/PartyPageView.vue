@@ -3,13 +3,20 @@
         <div class="container main-container-padding">
             <div class="party-page-header-w display-flex justify-between p-tb-24px">
                 <div class="party-page-title-w max-w-840 display-flex gap-40">
-                    <n-avatar :size="120" bordered class="min-w-120px" src="./images/QuantumQuestParty.jpg" />
+                    <n-avatar
+                        :size="120"
+                        :src="party ? party.party.avatar : './images/QuantumQuestParty.jpg'"
+                        bordered
+                        class="min-w-120px"
+                    />
                     <div class="display-grid gap-8">
-                        <h1>Quantum Quest</h1>
+                        <h1>{{ party ? party.party.name : 'Quantum Quest' }}</h1>
                         <p class="op-06">
-                            Join us for a game party where gamers unite to complete quests and earn Linea tokens. Team
-                            up, strategize, and conquer challenges together. Let's embark on this adventure and collect
-                            those tokens!
+                            {{
+                                party
+                                    ? party.party.description
+                                    : "Join us for a game party where gamers unite to complete quests and earn Linea tokens. Teamup, strategize, and conquer challenges together. Let/'s embark on this adventure and collect those tokens!"
+                            }}
                         </p>
                     </div>
                 </div>
@@ -111,9 +118,21 @@ import ComradeTableElement from '@/components/ComradeTableElement.vue'
 import type { ComradeTableElementProps } from '@/components/СomradeTableElementProps.type.ts'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { usePartyStore, useQuestsStore } from '@/stores'
 const route = useRoute()
 
-const partySlug = computed(() => route.params.slug as string)
+const partyStore = usePartyStore()
+const questsStore = useQuestsStore()
+
+const partySlug = computed(() => route.params.id as string)
+
+const party = computed(() =>
+    partyStore.party.find(el => {
+        return el.index.toString() === partySlug.value
+    })
+)
+
+console.log(party.value, partySlug.value, partyStore.party)
 const showModal = ref(false)
 const rows: ComradeTableElementProps[] = [
     {
