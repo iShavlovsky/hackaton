@@ -221,15 +221,15 @@ import { useClipboard } from '@vueuse/core'
 const showModal = ref(false)
 const showModal2 = ref(false)
 const message = useMessage()
-const { address, chainId, chain } = useAccount()
+const { address, chainId } = useAccount()
 const props = defineProps<{
     card: IQuestCard
     meta: {
-        partyId: bigint
-        lastPartyId: bigint
-        influencersParty: `0x${string}`
-        totalPartyTasks: bigint
-        task_id: `0x${string}`
+        partyId: bigint | undefined
+        lastPartyId: bigint | undefined
+        influencersParty: `0x${string}` | undefined
+        totalPartyTasks: bigint | undefined
+        task_id: `0x${string}` | undefined
     }
 }>()
 
@@ -256,7 +256,7 @@ const {
 } = useReadContract({
     ...configContract,
     functionName: 'generatePrivateKey',
-    args: [props.meta.influencersParty, props.meta.task_id],
+    args: [props.meta.influencersParty!, props.meta.task_id!],
     query: {
         enabled: true
     }
@@ -291,7 +291,7 @@ const claimTask = async () => {
         writeContract({
             ...configContract,
             functionName: 'claim',
-            args: [props.meta.partyId, props.meta.task_id, privateKey.value]
+            args: [props.meta.partyId!, props.meta.task_id!, privateKey.value]
         })
     } else {
         console.log('privateKey!!!', privateKey.value)
