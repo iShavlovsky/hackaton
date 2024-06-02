@@ -12,9 +12,16 @@
                     </svg>
                 </span>
             </RouterLink>
-            <div>
+            <div class="navbar-wallets-btns display-flex gap-8">
+                <TonWallet />
+
                 <div class="nav-bar-wallet-btn-w display-flex flex-row align-items-center gap-16">
-                    <n-button v-if="isConnected" :loading="isConnectPending" @click="disconnect()">
+                    <n-button
+                        v-if="isConnected"
+                        :loading="isConnectPending"
+                        class="connect-wallet-green"
+                        @click="disconnect()"
+                    >
                         <template #icon>
                             <n-icon :component="Unlink" :depth="1" color="#92FE75" />
                         </template>
@@ -29,7 +36,7 @@
                         trigger="click"
                         @select="handleSelect"
                     >
-                        <n-button :loading="isConnectPending" round>
+                        <n-button :loading="isConnectPending" class="connect-wallet-green" round>
                             <template #icon>
                                 <n-icon :component="WalletOutline" :depth="1" color="#92FE75" />
                             </template>
@@ -60,6 +67,7 @@ import { useConnect, useDisconnect } from '@wagmi/vue'
 import { Unlink, WalletOutline } from '@vicons/ionicons5'
 import Balance from '@/components/Balance.vue'
 import { useMainStore } from '@/stores'
+import TonWallet from '@/components/TonWallet.vue'
 
 const store = useMainStore()
 const { connect, connectors, isPending: isConnectPending } = useConnect()
@@ -123,5 +131,15 @@ const handleSelect = (key: string) => {
         flex-direction: column;
         align-items: start;
     }
+}
+
+.navbar-wallets-btns {
+    @media (max-width: 520px) {
+        flex-direction: column;
+    }
+}
+
+.connect-wallet-green {
+    height: 40px;
 }
 </style>

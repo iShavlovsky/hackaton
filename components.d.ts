@@ -35,5 +35,7 @@ declare module 'vue' {
     QuestCard: typeof import('./src/components/QuestCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TonWallet: typeof import('./src/components/TonWallet.vue')['default']
+    TunWallet: typeof import("./src/components/TunWallet.vue")["default"]
   }
 }
