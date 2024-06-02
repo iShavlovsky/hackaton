@@ -113,12 +113,12 @@
 import { Add, CopyOutline, SettingsSharp } from '@vicons/ionicons5'
 import PartiesTableElement from '@/components/PartiesTableElement.vue'
 import { useMainStore, usePartyStore, useQuestsStore } from '@/stores'
-import { useAccount, useReadContract, useSimulateContract } from '@wagmi/vue'
+import { useAccount, useReadContract } from '@wagmi/vue'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
 import { RouterLink } from 'vue-router'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { encodeAbiParameters, keccak256 } from 'viem'
 // import abi from '@/contracts/abi.json'
 import { abi } from '@/contracts/abi.ts'
@@ -177,6 +177,7 @@ const { data: totalPartyTasks, refetch: getTotalPartyTasks } = useReadContract({
 
 const getTaskId = async () => {
     // task_id
+
     // bytes32 task_id = keccak256(
     //     abi.encode(party_id, party_task_id, influencer)
     // );
