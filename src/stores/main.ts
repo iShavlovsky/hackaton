@@ -1,7 +1,8 @@
 import { reactive, ref } from 'vue'
-import { useAccount } from '@wagmi/vue'
-import { type Chain } from 'viem'
+import { useAccount, useReadContract } from '@wagmi/vue'
+import { type Chain, encodeAbiParameters, keccak256 } from 'viem'
 import { defineStore } from 'pinia'
+import abi from '@/contracts/abi.json'
 
 export const useMainStore = defineStore('main', () => {
     const addressUser = ref<`0x${string}` | undefined>(undefined)

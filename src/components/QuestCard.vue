@@ -157,25 +157,55 @@
                 </div>
             </n-spin>
         </n-modal>
+
+        <n-modal v-model:show="isSuccess" class="quest-custom-modal min-w-648" preset="dialog" title="Dialog">
+            <template #header>
+                <div></div>
+            </template>
+            <div class="quests-card-modal-content p-tb-24px mt-40">
+                <h1 class="text-center">Congrats! 15 TBA Claimed!</h1>
+                <div class="display-grid gap-8 mt-40">
+                    <div class="display-flex flex-row gap-8 align-items-center op-06">
+                        <p>
+                            {{ data }}
+                        </p>
+                        <button v-if="isSupported && data" class="tech-btn" @click="copyHandler(data)">
+                            <span><n-icon :component="CopyOutline" :depth="1" :size="24" color="#fff" /></span>
+                        </button>
+                    </div>
+                    <a :href="`https://sepolia.lineascan.build/address/${data}`"></a>
+                    <RouterLink class="main-custom-btn width-full" to="/" type="button">
+                        <span>Come back home</span>
+                    </RouterLink>
+                </div>
+            </div>
+        </n-modal>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue'
-import { Checkmark, CheckmarkSharp, FileTrayFull, LockClosed, Star } from '@vicons/ionicons5'
+import { Checkmark, CheckmarkSharp, CopyOutline, FileTrayFull, LockClosed, Star } from '@vicons/ionicons5'
 import type { IEventCard, IQuestCard } from '@/types'
-import { useAccount, useWriteContract } from '@wagmi/vue'
+import { useAccount, useReadContract, useSimulateContract, useWriteContract } from '@wagmi/vue'
 import { useMessage } from 'naive-ui'
 import abi from '@/contracts/abi.json'
 import type { ContractFunctionArgs } from 'viem'
+import { RouterLink } from 'vue-router'
+import { useClipboard } from '@vueuse/core'
 
-const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
 const showModal = ref(false)
 const message = useMessage()
 const { address, chainId } = useAccount()
 const props = defineProps<{
     card: IQuestCard
-    lastParty: unknown
+    meta: {
+        partyId: number
+        lastPartyId: unknown
+        influencersParty: unknown
+        totalPartyTasks: unknown
+        task_id: unknown
+    }
 }>()
 
 const emit = defineEmits<{
@@ -187,17 +217,31 @@ const activeEvent = computed(() => props.card.events[activeEventIndex.value])
 const claimRewardsStep = ref(false)
 const descriptionEvent = ref<string>('')
 
+const configContract = reactive({
+    abi,
+    chainId: chainId.value,
+    address: import.meta.env.VITE_ID_CONTRACT_ADDRESS_1,
+    account: address.value
+})
+
+const {
+    data: privateKey,
+    refetch: getPrivateKey,
+    queryKey: queryPrivateKey
+} = useReadContract({
+    ...configContract,
+    functionName: 'generatePrivateKey',
+    args: [props.meta.influencersParty, props.meta.task_id]
+})
+
 const functionName = ref('claim')
-const args = ref<ContractFunctionArgs>([])
+const args = ref<ContractFunctionArgs>([props.meta.partyId, props.meta.task_id, privateKey.value])
 
 const { data, error, isPending, isSuccess, isError, writeContract } = useWriteContract()
 
 const actionContract = () => {
     writeContract({
-        abi,
-        chainId: chainId.value,
-        address: contractAddress1,
-        account: address.value,
+        ...configContract,
         functionName: functionName.value,
         ...(args.value && args.value.length ? { args: args.value } : {})
     })
@@ -207,16 +251,66 @@ const setEventDescription = (event: IEventCard) => {
     descriptionEvent.value = event.description
 }
 
-const claimTask = async (party_id: number, task_id: string) => {
+// const createRS = async () => {
+//     functionName.value = 'createRS'
+//     args.value = []
+//     actionContract()
+// }
+//
+// const createTask = async (party_id: number, temp: number) => {
+//     functionName.value = 'createTask'
+//     args.value = [party_id, { temp }]
+//     actionContract()
+// }
+
+const claimTask = async () => {
     functionName.value = 'claim'
-    args.value = [party_id, task_id, 'secret']
+    args.value = [props.meta.partyId, props.meta.task_id, privateKey.value]
+    // writeContract({
+    //     ...configContract,
+    // })
+    console.log(args.value)
     actionContract()
 }
 
+const burnTokens = async (id: number, value: number) => {
+    functionName.value = 'burn'
+    args.value = [id, value]
+    actionContract()
+}
+
+const burnBatchTokens = async (ids: number[], values: number[]) => {
+    functionName.value = 'burnBatch'
+    args.value = [ids, values]
+    actionContract()
+}
+
+const {
+    data: claim,
+    refetch: getclaim,
+    isSuccess: isClaim,
+    isPending: isPendingClaim,
+    queryKey
+} = useSimulateContract({
+    ...configContract,
+    functionName: 'claim',
+    args: [props.meta.partyId as number, props.meta.task_id as string, privateKey.value],
+    query: {
+        enabled: true
+    }
+})
+onMounted(async () => {
+    // getPrivateKey()
+    console.log(privateKey.value)
+})
+// console.log(queryKey)
 const setEventDone = async () => {
     if (claimRewardsStep.value) {
-        await claimTask(props.lastParty as number, 'sd')
+        // await getclaim()
+        // console.log(claim, queryKey)
+        await claimTask()
     }
+
     if (activeEvent.value) {
         emit('setEvent', { cardId: props.card.id, eventTitle: activeEvent.value.title })
         activeEvent.value.status = true
@@ -227,6 +321,16 @@ const setEventDone = async () => {
         } else {
             claimRewardsStep.value = true
         }
+    }
+}
+
+const { text, copy, copied, isSupported } = useClipboard()
+
+const copyHandler = (textCopy: string) => {
+    if (address.value) {
+        copy(textCopy).then(() => {
+            if (copied) message.success(text.value)
+        })
     }
 }
 
@@ -243,9 +347,31 @@ watch(
 watch(
     () => isError.value,
     () => {
+        console.log(error.value?.message)
         message.error(`Error ${error.value?.message}`)
     }
 )
+
+// struct PartyTask {
+//   uint256 temp;
+// }
+// task_id
+// influencersParty(uint256 party_id) external view returns(address)
+
+// bytes32 task_id = keccak256(
+//     abi.encode(party_id, party_task_id, influencer)
+// );
+
+// function countTaskId(
+//     uint256 party_id,
+//     uint256 party_task_id,
+//     address influencer
+// ) public pure returns (bytes32)
+
+// function generatePrivateKey(
+//     address _user,
+//     bytes32 _task_id
+// ) public pure returns (bytes32 secretKey)
 </script>
 
 <style lang="scss">

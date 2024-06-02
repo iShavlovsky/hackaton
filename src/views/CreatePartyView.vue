@@ -207,7 +207,7 @@
                                 <span><n-icon :component="CopyOutline" :depth="1" :size="24" color="#fff" /></span>
                             </button>
                         </div>
-                        <RouterLink class="main-custom-btn width-full" to="/" type="button" @click="addPartyMember">
+                        <RouterLink class="main-custom-btn width-full" to="/" type="button">
                             <span>Come back home</span>
                         </RouterLink>
                     </div>
@@ -274,36 +274,6 @@ const getLastPartyId = async () => {
     await refetch()
     message.info(`last Party Id: ${lastPartyId.value}`)
     console.log('last Party Id:', lastPartyId.value)
-}
-
-const createRS = async () => {
-    functionName.value = 'createRS'
-    args.value = []
-    actionContract()
-}
-
-const createTask = async (party_id: number, temp: number) => {
-    functionName.value = 'createTask'
-    args.value = [party_id, { temp }]
-    actionContract()
-}
-
-const claimTask = async (party_id: number, task_id: string) => {
-    functionName.value = 'claim'
-    args.value = [party_id, task_id, 'secret']
-    actionContract()
-}
-
-const burnTokens = async (id: number, value: number) => {
-    functionName.value = 'burn'
-    args.value = [id, value]
-    actionContract()
-}
-
-const burnBatchTokens = async (ids: number[], values: number[]) => {
-    functionName.value = 'burnBatch'
-    args.value = [ids, values]
-    actionContract()
 }
 
 onMounted(() => {

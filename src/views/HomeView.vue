@@ -10,6 +10,9 @@
                         <button class="tech-btn" @click="partyStore.clearLocalStorage">
                             <span><n-icon :component="SettingsSharp" :depth="1" :size="24" color="#fff" /></span>
                         </button>
+                        <!--                        <button class="tech-btn" @click="f">-->
+                        <!--                            <span><n-icon :component="SettingsSharp" :depth="1" :size="24" color="red" /></span>-->
+                        <!--                        </button>-->
                     </div>
                     <div class="display-flex flex-row gap-8 align-items-center op-06">
                         <p>
@@ -89,7 +92,13 @@
                                     v-for="card in questsStore.questCards"
                                     :key="card.id"
                                     :card="card"
-                                    :lastParty="lastPartyId"
+                                    :meta="{
+                                        partyId,
+                                        lastPartyId,
+                                        influencersParty,
+                                        totalPartyTasks,
+                                        task_id
+                                    }"
                                     @set-event="questsStore.handleSetEvent"
                                 ></QuestCard>
                             </KeepAlive>
@@ -110,6 +119,8 @@ import { useMessage } from 'naive-ui'
 import QuestCard from '@/components/QuestCard.vue'
 import { RouterLink } from 'vue-router'
 import abi from '@/contracts/abi.json'
+import { ref, watch } from 'vue'
+import { type ContractFunctionArgs, encodeAbiParameters, keccak256, parseAbiParameters } from 'viem'
 
 const store = useMainStore()
 const partyStore = usePartyStore()
@@ -126,26 +137,76 @@ const copyHandler = (textCopy: string) => {
         })
     }
 }
-const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
-const { data: lastPartyId, refetch } = useReadContract({
+
+const partyId = ref(1)
+const task_id = ref()
+const configContract = reactive({
     abi,
     chainId: chainId.value,
-    address: contractAddress1,
-    account: address.value,
+    address: import.meta.env.VITE_ID_CONTRACT_ADDRESS_1,
+    account: address.value
+})
+const contractAddress1 = import.meta.env.VITE_ID_CONTRACT_ADDRESS_1
+const { data: lastPartyId, refetch: getLastPartyId } = useReadContract({
+    ...configContract,
     functionName: 'lastPartyId',
     query: {
         enabled: true
     }
 })
 
-const getLastPartyId = async () => {
-    await refetch()
-    message.info(`last Party Id: ${lastPartyId.value}`)
-    console.log('last Party Id:', lastPartyId.value)
+const { data: influencersParty, refetch: getInfluencersParty } = useReadContract({
+    ...configContract,
+    functionName: 'influencersParty',
+    args: [partyId.value],
+    query: {
+        enabled: true
+    }
+})
+
+const { data: totalPartyTasks, refetch: getTotalPartyTasks } = useReadContract({
+    ...configContract,
+    functionName: 'total_party_tasks',
+    args: [partyId.value],
+    query: {
+        enabled: true
+    }
+})
+
+const getTaskId = async () => {
+    const encodedData = encodeAbiParameters(
+        [
+            { name: 'party_id', type: 'uint256' },
+            { name: 'party_task_id', type: 'uint256' },
+            { name: 'influencer', type: 'address' }
+        ],
+
+        [lastPartyId.value as bigint, totalPartyTasks.value as bigint, influencersParty.value as `0x${string}`]
+    )
+    const hash = keccak256(encodedData)
+    task_id.value = `${hash}`
+    return task_id.value
 }
 
-onMounted(() => {
-    getLastPartyId()
+const f = async () => {
+    // await getLastPartyId()
+    console.log('lastPartyId', lastPartyId.value)
+    // await getInfluencersParty()
+    console.log('influencersParty', influencersParty.value)
+    // await getTotalPartyTasks()
+    console.log('totalPartyTasks', totalPartyTasks.value)
+    // await getTaskId()
+    console.log('task_id', task_id.value)
+}
+
+onMounted(async () => {
+    await getLastPartyId()
+    console.log('lastPartyId', lastPartyId.value)
+    await getInfluencersParty()
+    console.log('influencersParty', influencersParty.value)
+    await getTotalPartyTasks()
+    console.log('totalPartyTasks', totalPartyTasks.value)
+    await getTaskId()
 })
 
 const parlyLength = computed(() => partyStore.party.length)

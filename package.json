@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@tanstack/vue-query": "^5.40.0",
+    "@tonconnect/ui": "^2.0.3",
     "@vueuse/core": "^10.10.0",
     "@wagmi/vue": "^0.0.10",
     "abitype": "^1.0.2",

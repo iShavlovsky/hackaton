@@ -12,9 +12,16 @@
                     </svg>
                 </span>
             </RouterLink>
-            <div>
+            <div class="navbar-wallets-btns display-flex gap-8">
+                <div id="ton-connect"></div>
+
                 <div class="nav-bar-wallet-btn-w display-flex flex-row align-items-center gap-16">
-                    <n-button v-if="isConnected" :loading="isConnectPending" @click="disconnect()">
+                    <n-button
+                        v-if="isConnected"
+                        :loading="isConnectPending"
+                        class="connect-wallet-green"
+                        @click="disconnect()"
+                    >
                         <template #icon>
                             <n-icon :component="Unlink" :depth="1" color="#92FE75" />
                         </template>
@@ -29,7 +36,7 @@
                         trigger="click"
                         @select="handleSelect"
                     >
-                        <n-button :loading="isConnectPending" round>
+                        <n-button :loading="isConnectPending" class="connect-wallet-green" round>
                             <template #icon>
                                 <n-icon :component="WalletOutline" :depth="1" color="#92FE75" />
                             </template>
@@ -55,7 +62,7 @@
 </template>
 <script lang="ts" setup>
 import { NIcon, useMessage } from 'naive-ui'
-import { computed, h } from 'vue'
+import { computed, h, onMounted } from 'vue'
 import { useConnect, useDisconnect } from '@wagmi/vue'
 import { Unlink, WalletOutline } from '@vicons/ionicons5'
 import Balance from '@/components/Balance.vue'
@@ -65,7 +72,6 @@ const store = useMainStore()
 const { connect, connectors, isPending: isConnectPending } = useConnect()
 const { disconnect } = useDisconnect()
 const { isConnected, address, chain } = store.getAccount()
-
 const message = useMessage()
 
 const renderIcon = (base: string | undefined) => {
@@ -105,6 +111,38 @@ const handleSelect = (key: string) => {
         message.warning('Failed connection attempt!')
     }
 }
+
+onMounted(() => {
+    const script = document.createElement('script')
+    script.src = 'https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js'
+    script.onload = () => {
+        const tonConnectUI = new (window as any).TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://your-app-url.com/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect'
+        })
+    }
+    document.head.appendChild(script)
+})
+
+const connectToWallet = async () => {
+    try {
+        const tonConnectUI = new (window as any).TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://your-app-url.com/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect'
+        })
+        const connectedWallet = await tonConnectUI.connectWallet()
+        console.log(connectedWallet)
+    } catch (error) {
+        console.error('Error connecting to wallet:', error)
+    }
+}
+
+// onMounted(() => {
+//     const script = document.createElement('script')
+//     script.src = 'https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js'
+//     script.onload = connectToWallet
+//     document.head.appendChild(script)
+// })
 </script>
 <style lang="scss">
 .nav-bar {
@@ -123,5 +161,15 @@ const handleSelect = (key: string) => {
         flex-direction: column;
         align-items: start;
     }
+}
+
+.navbar-wallets-btns {
+    @media (max-width: 520px) {
+        flex-direction: column;
+    }
+}
+
+.connect-wallet-green {
+    height: 40px;
 }
 </style>

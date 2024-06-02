@@ -1,9 +1,9 @@
 import './assets/main.scss'
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import { WagmiPlugin } from '@wagmi/vue'
 import naive from 'naive-ui'
+import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
